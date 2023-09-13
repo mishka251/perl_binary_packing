@@ -1,0 +1,639 @@
+{
+  "test_pack": [
+    {
+      "format": "a",
+      "to_pack": [
+        "a"
+      ],
+      "expected_packed": [
+        "0x61"
+      ]
+    },
+    {
+      "format": "a",
+      "to_pack": [
+        "1"
+      ],
+      "expected_packed": [
+        "0x31"
+      ]
+    },
+    {
+      "format": "a",
+      "to_pack": [
+        "`"
+      ],
+      "expected_packed": [
+        "0x60"
+      ]
+    },
+    {
+      "format": "a",
+      "to_pack": [
+        "aaaaaa"
+      ],
+      "expected_packed": [
+        "0x61"
+      ]
+    },
+    {
+      "format": "a",
+      "to_pack": [
+        ""
+      ],
+      "expected_packed": [
+        "0x00"
+      ]
+    },
+    {
+      "format": "a",
+      "to_pack": [
+      ],
+      "expected_packed": [
+        "0x00"
+      ]
+    },
+    {
+      "format": "aaaa",
+      "to_pack": [
+        "abcd"
+      ],
+      "expected_packed": [
+        "0x61",
+        "0x00",
+        "0x00",
+        "0x00"
+      ]
+    },
+    {
+      "format": "aaaa",
+      "to_pack": [
+        "a"
+      ],
+      "expected_packed": [
+        "0x61",
+        "0x00",
+        "0x00",
+        "0x00"
+      ]
+    },
+    {
+      "format": "a4",
+      "to_pack": [
+        "abcd"
+      ],
+      "expected_packed": [
+        "0x61",
+        "0x62",
+        "0x63",
+        "0x64"
+      ]
+    },
+    {
+      "format": "aaaa",
+      "to_pack": [
+        "a",
+        "b",
+        "c",
+        "d"
+      ],
+      "expected_packed": [
+        "0x61",
+        "0x62",
+        "0x63",
+        "0x64"
+      ]
+    },
+    {
+      "format": "a*",
+      "to_pack": [
+        "abcd"
+      ],
+      "expected_packed": [
+        "0x61",
+        "0x62",
+        "0x63",
+        "0x64"
+      ]
+    },
+    {
+      "format": "a*",
+      "to_pack": [
+      ],
+      "expected_packed": [
+      ]
+    },
+    {
+      "format": "a*",
+      "to_pack": [
+        ""
+      ],
+      "expected_packed": [
+      ]
+    },
+    {
+      "format": "a*",
+      "to_pack": [
+        " "
+      ],
+      "expected_packed": [
+        "0x20"
+      ]
+    },
+    {
+      "format": "A",
+      "to_pack": [
+        "a"
+      ],
+      "expected_packed": [
+        "0x61"
+      ]
+    },
+    {
+      "format": "A",
+      "to_pack": [
+        "z"
+      ],
+      "expected_packed": [
+        "0x7a"
+      ]
+    },
+    {
+      "format": "a",
+      "to_pack": [
+        "aaaaaa"
+      ],
+      "expected_packed": [
+        "0x61"
+      ]
+    },
+    {
+      "format": "A",
+      "to_pack": [
+        ""
+      ],
+      "expected_packed": [
+        "0x20"
+      ]
+    },
+    {
+      "format": "A",
+      "to_pack": [
+      ],
+      "expected_packed": [
+        "0x20"
+      ]
+    },
+    {
+      "format": "AAAA",
+      "to_pack": [
+        "abcd"
+      ],
+      "expected_packed": [
+        "0x61",
+        "0x20",
+        "0x20",
+        "0x20"
+      ]
+    },
+    {
+      "format": "AAAA",
+      "to_pack": [
+        "a"
+      ],
+      "expected_packed": [
+        "0x61",
+        "0x20",
+        "0x20",
+        "0x20"
+      ]
+    },
+    {
+      "format": "A4",
+      "to_pack": [
+        "abcd"
+      ],
+      "expected_packed": [
+        "0x61",
+        "0x62",
+        "0x63",
+        "0x64"
+      ]
+    },
+    {
+      "format": "AAAA",
+      "to_pack": [
+        "a",
+        "b",
+        "c",
+        "d"
+      ],
+      "expected_packed": [
+        "0x61",
+        "0x62",
+        "0x63",
+        "0x64"
+      ]
+    },
+    {
+      "format": "A",
+      "to_pack": [
+        "a"
+      ],
+      "expected_packed": [
+        "0x61"
+      ]
+    },
+    {
+      "format": "A",
+      "to_pack": [
+        "z"
+      ],
+      "expected_packed": [
+        "0x7a"
+      ]
+    },
+    {
+      "format": "A*",
+      "to_pack": [
+        "abcd"
+      ],
+      "expected_packed": [
+        "0x61",
+        "0x62",
+        "0x63",
+        "0x64"
+      ]
+    },
+    {
+      "format": "A*",
+      "to_pack": [
+      ],
+      "expected_packed": [
+      ]
+    },
+    {
+      "format": "A*",
+      "to_pack": [
+        ""
+      ],
+      "expected_packed": [
+      ]
+    },
+    {
+      "format": "A*",
+      "to_pack": [
+        " "
+      ],
+      "expected_packed": [
+        "0x20"
+      ]
+    },
+    {
+      "format": "a",
+      "to_pack": [
+        "aaaaaa"
+      ],
+      "expected_packed": [
+        "0x61"
+      ]
+    },
+    {
+      "format": "Z",
+      "to_pack": [
+        ""
+      ],
+      "expected_packed": [
+        "0x00"
+      ]
+    },
+    {
+      "format": "Z",
+      "to_pack": [
+      ],
+      "expected_packed": [
+        "0x00"
+      ]
+    },
+    {
+      "format": "ZZZZ",
+      "to_pack": [
+        "abcd"
+      ],
+      "expected_packed": [
+        "0x00",
+        "0x00",
+        "0x00",
+        "0x00"
+      ]
+    },
+    {
+      "format": "ZZZZ",
+      "to_pack": [
+        "a"
+      ],
+      "expected_packed": [
+        "0x00",
+        "0x00",
+        "0x00",
+        "0x00"
+      ]
+    },
+    {
+      "format": "Z4",
+      "to_pack": [
+        "abcd"
+      ],
+      "expected_packed": [
+        "0x61",
+        "0x62",
+        "0x63",
+        "0x00"
+      ]
+    },
+    {
+      "format": "ZZZZ",
+      "to_pack": [
+        "a",
+        "b",
+        "c",
+        "d"
+      ],
+      "expected_packed": [
+        "0x00",
+        "0x00",
+        "0x00",
+        "0x00"
+      ]
+    },
+    {
+      "format": "Z*",
+      "to_pack": [
+        ""
+      ],
+      "expected_packed": [
+        "0x00"
+      ]
+    },
+    {
+      "format": "Z*",
+      "to_pack": [
+      ],
+      "expected_packed": [
+        "0x00"
+      ]
+    },
+    {
+      "format": "Z*",
+      "to_pack": [
+        "abcd"
+      ],
+      "expected_packed": [
+        "0x61",
+        "0x62",
+        "0x63",
+        "0x64",
+        "0x00"
+      ]
+    },
+    {
+      "format": "Z*",
+      "to_pack": [
+        "a"
+      ],
+      "expected_packed": [
+        "0x61",
+        "0x00"
+      ]
+    },
+    {
+      "format": "Z*",
+      "to_pack": [
+        "abcd"
+      ],
+      "expected_packed": [
+        "0x61",
+        "0x62",
+        "0x63",
+        "0x64",
+        "0x00"
+      ]
+    },
+    {
+      "format": "Z*",
+      "to_pack": [
+        "a",
+        "b",
+        "c",
+        "d"
+      ],
+      "expected_packed": [
+        "0x61",
+        "0x00"
+      ]
+    },
+    {
+      "format": "c",
+      "to_pack": [
+        0
+      ],
+      "expected_packed": [
+        "0x00"
+      ]
+    },
+    {
+      "format": "c",
+      "to_pack": [
+        127
+      ],
+      "expected_packed": [
+        "0x7f"
+      ]
+    },
+    {
+      "format": "c",
+      "to_pack": [
+        1
+      ],
+      "expected_packed": [
+        "0x01"
+      ]
+    },
+    {
+      "format": "c",
+      "to_pack": [
+        10
+      ],
+      "expected_packed": [
+        "0x0a"
+      ]
+    },
+    {
+      "format": "c",
+      "to_pack": [
+        -1
+      ],
+      "expected_packed": [
+        "0xff"
+      ]
+    },
+    {
+      "format": "c",
+      "to_pack": [
+        -120
+      ],
+      "expected_packed": [
+        "0x88"
+      ]
+    },
+    {
+      "format": "ccc",
+      "to_pack": [
+        5
+      ],
+      "expected_packed": [
+        "0x05",
+        "0x00",
+        "0x00"
+      ]
+    },
+    {
+      "format": "ccc",
+      "to_pack": [
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "expected_packed": [
+        "0x06",
+        "0x07",
+        "0x08"
+      ]
+    },
+    {
+      "format": "C",
+      "to_pack": [
+        0
+      ],
+      "expected_packed": [
+        "0x00"
+      ]
+    },
+    {
+      "format": "C",
+      "to_pack": [
+        127
+      ],
+      "expected_packed": [
+        "0x7f"
+      ]
+    },
+    {
+      "format": "C",
+      "to_pack": [
+        1
+      ],
+      "expected_packed": [
+        "0x01"
+      ]
+    },
+    {
+      "format": "C",
+      "to_pack": [
+        10
+      ],
+      "expected_packed": [
+        "0x0a"
+      ]
+    },
+    {
+      "format": "C",
+      "to_pack": [
+        170
+      ],
+      "expected_packed": [
+        "0xaa"
+      ]
+    },
+    {
+      "format": "C",
+      "to_pack": [
+        210
+      ],
+      "expected_packed": [
+        "0xd2"
+      ]
+    },
+    {
+      "format": "C",
+      "to_pack": [
+        255
+      ],
+      "expected_packed": [
+        "0xff"
+      ]
+    },
+    {
+      "format": "CCC",
+      "to_pack": [
+        5
+      ],
+      "expected_packed": [
+        "0x05",
+        "0x00",
+        "0x00"
+      ]
+    },
+    {
+      "format": "CCC",
+      "to_pack": [
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "expected_packed": [
+        "0x06",
+        "0x07",
+        "0x08"
+      ]
+    },
+      {
+      "format": "C3",
+      "to_pack": [
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "expected_packed": [
+        "0x06",
+        "0x07",
+        "0x08"
+      ]
+    },
+     {
+      "format": "C3Z3C",
+      "to_pack": [
+        6,
+        7,
+        8,
+        "abcd",
+        9
+      ],
+      "expected_packed": [
+        "0x06",
+        "0x07",
+        "0x08",
+        "0x61",
+        "0x62",
+        "0x00",
+        "0x09"
+      ]
+    }
+  ]
+}
