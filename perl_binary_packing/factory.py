@@ -35,8 +35,8 @@ simple_formats = {
     "C": UnSignedChar(),
     # "w": AsciiNullPaddedString(),
 
-    "h": SignedShort(),
-    "H": UnSignedShort(),
+    "s": SignedShort(),
+    "S": UnSignedShort(),
 
     "l": SignedLong(),
     "L": UnSignedLong(),

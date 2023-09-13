@@ -39,6 +39,12 @@ class TestFinal(unittest.TestCase):
                 for test_pack in test_packing
             ]
 
+    def _format_bytes(self, _bin: bytes) -> str:
+        result = ""
+        for byte in _bin:
+            result += hex(byte)+" "
+        return result
+
     def test_packing(self):
         for test_pack in self._test_packing:
             with self.subTest(**test_pack):
@@ -55,5 +61,5 @@ class TestFinal(unittest.TestCase):
                 self.assertEqual(
                     expected,
                     packed,
-                    f"Checking: pack({format}, {to_pack_view})/ Expected: \"{expected}\", actual: \"{packed}\""
+                    f"Checking: pack({format}, {to_pack_view})/ Expected: \"{self._format_bytes(expected)}\", actual: \"{self._format_bytes(packed)}\""
                 )
