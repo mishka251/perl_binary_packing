@@ -20,7 +20,19 @@ def unpack(format_str: str, data: bytes) -> tuple[Any]:
     result = []
     _data = data
     for _format in formats:
-        unpack_result = _format.unpack(_data)
+        needed_len = None
+        try:
+            needed_len = _format.get_bytes_length()
+        except NotImplementedError:
+            pass
+        if needed_len:
+            data_part = _data[0:needed_len]
+        else:
+            data_part = _data
+        unpack_result = _format.unpack(data_part)
         result.extend(unpack_result.data)
-        _data = _data[unpack_result.unpacked_bytes_length]
+        if unpack_result.unpacked_bytes_length < len(data):
+            _data = _data[unpack_result.unpacked_bytes_length:]
+        else:
+            _data = b""
     return tuple(result)

@@ -899,6 +899,121 @@
         "0x3f"
       ]
     },
+
+    {
+      "format": "d",
+      "to_pack": [
+        0.75
+      ],
+      "expected_packed": [
+        "0x01",
+        "0x00",
+        "0x00",
+        "0x00",
+        "0x00",
+        "0x00",
+        "0xe8",
+        "0x3f"
+      ]
+    },
+
+    {
+      "format": "d",
+      "to_pack": [
+        0.66
+      ],
+      "expected_packed": [
+        "0x20",
+        "0x85",
+        "0xeb",
+        "0x51",
+        "0xb8",
+        "0x1e",
+        "0xe5",
+        "0x3f"
+      ]
+    },
+
+    {
+      "format": "d",
+      "to_pack": [
+        0.33
+      ],
+      "expected_packed": [
+        "0x20",
+        "0x85",
+        "0xeb",
+        "0x51",
+        "0xb8",
+        "0x1e",
+        "0xd5",
+        "0x3f"
+      ]
+    },
+        {
+      "format": "d",
+      "to_pack": [
+        0.125
+      ],
+      "expected_packed": [
+        "0x01",
+        "0x00",
+        "0x00",
+        "0x00",
+        "0x00",
+        "0x00",
+        "0xc0",
+        "0x3f"
+      ]
+    },
+        {
+      "format": "d",
+      "to_pack": [
+        0.0625
+      ],
+      "expected_packed": [
+        "0x02",
+        "0x00",
+        "0x00",
+        "0x00",
+        "0x00",
+        "0x00",
+        "0xb0",
+        "0x3f"
+      ]
+    },
+        {
+      "format": "d",
+      "to_pack": [
+        1.25
+      ],
+      "expected_packed": [
+        "0x00",
+        "0x00",
+        "0x00",
+        "0x00",
+        "0x00",
+        "0x00",
+        "0xf4",
+        "0x3f"
+      ]
+    },
+        {
+      "format": "d",
+      "to_pack": [
+        2.25
+      ],
+      "expected_packed": [
+        "0x00",
+        "0x00",
+        "0x00",
+        "0x00",
+        "0x00",
+        "0x00",
+        "0x02",
+        "0x40"
+      ]
+    },
     {
       "format": "d",
       "to_pack": [
@@ -962,6 +1077,33 @@
         "0x62",
         "0xc0"
       ]
+    }
+  ],
+  "test_unpack": [
+    {
+      "format": "C2",
+      "to_unpack": [
+        "0x01",
+        "0x02"
+      ],
+      "expected_unpacked": [1,2]
+    },
+        {
+      "format": "C",
+      "to_unpack": [
+        "0xff"
+      ],
+      "expected_unpacked": [255]
+    },
+     {
+      "format": "CCCC",
+      "to_unpack": [
+        "0x01",
+        "0x02",
+        "0x03",
+        "0x04"
+      ],
+      "expected_unpacked": [1, 2, 3, 4]
     }
   ]
 }

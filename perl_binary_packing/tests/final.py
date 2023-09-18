@@ -3,7 +3,7 @@ import struct
 import unittest
 from typing import TypedDict, Any
 
-from perl_binary_packing import pack
+from perl_binary_packing import pack, unpack
 
 
 class TestPackData(TypedDict):
@@ -12,14 +12,19 @@ class TestPackData(TypedDict):
     expected_packed: bytes
 
 
+class TestUnPackData(TypedDict):
+    format: str
+    to_unpack: bytes
+    expected_unpacked: list[Any]
+
 class TestFinal(unittest.TestCase):
     json_test_file = "test_data.json"
     _test_packing: list[TestPackData] = []
+    _test_packing: list[TestUnPackData] = []
 
     @classmethod
-    def _process_expected_packed(cls, expected_packed_str: list[str]) -> bytes:
+    def _binary_hexes_to_bytes(cls, expected_packed_str: list[str]) -> bytes:
         return b''.join([struct.pack('B', int(byte, 16)) for byte in expected_packed_str])
-
 
     @classmethod
     def setUpClass(cls) -> None:
@@ -34,32 +39,75 @@ class TestFinal(unittest.TestCase):
                 TestPackData(
                     format=test_pack["format"],
                     to_pack=test_pack["to_pack"],
-                    expected_packed=cls._process_expected_packed(test_pack["expected_packed"]),
+                    expected_packed=cls._binary_hexes_to_bytes(test_pack["expected_packed"]),
                 )
                 for test_pack in test_packing
+            ]
+        if "test_unpack" in test_data:
+            test_unpacking = test_data["test_unpack"]
+
+            cls._test_unpacking = [
+                TestUnPackData(
+                    format=test_unpack["format"],
+                    to_unpack=cls._binary_hexes_to_bytes(test_unpack["to_unpack"]),
+                    expected_unpacked=test_unpack["expected_unpacked"],
+                )
+                for test_unpack in test_unpacking
             ]
 
     def _format_bytes(self, _bin: bytes) -> str:
         result = ""
         for byte in _bin:
-            result += hex(byte)+" "
+            result += hex(byte) + " "
         return result
 
     def test_packing(self):
         for test_pack in self._test_packing:
             with self.subTest(**test_pack):
-                format = test_pack["format"]
-                to_pack = test_pack["to_pack"]
-                expected = test_pack["expected_packed"]
-                if ("a" in format) or ("A" in format) or ("Z" in format):
-                    to_pack = [
-                        item.encode() if isinstance(item, str) else item
-                        for item in to_pack
-                    ]
-                packed = pack(format, *to_pack)
-                to_pack_view = "[" + ", ".join(map(lambda s: f'"{s}"', to_pack)) + "]"
-                self.assertEqual(
-                    expected,
-                    packed,
-                    f"Checking: pack({format}, {to_pack_view})/ Expected: \"{self._format_bytes(expected)}\", actual: \"{self._format_bytes(packed)}\""
-                )
+                self._subtest_pack(test_pack)
+
+    def _subtest_pack(self, test_pack: TestPackData):
+        format = test_pack["format"]
+        to_pack = test_pack["to_pack"]
+        expected = test_pack["expected_packed"]
+        if ("a" in format) or ("A" in format) or ("Z" in format):
+            to_pack = [
+                item.encode() if isinstance(item, str) else item
+                for item in to_pack
+            ]
+        packed = pack(format, *to_pack)
+        to_pack_view = self._format_array(to_pack)
+        test_msg = f"Checking: pack({format}, {to_pack_view})/ Expected: \"{self._format_bytes(expected)}\", actual: \"{self._format_bytes(packed)}\""
+        self.assertEqual(
+            expected,
+            packed,
+            test_msg,
+        )
+
+    def test_unpacking(self):
+        for test_unpack in self._test_unpacking:
+            with self.subTest(**test_unpack):
+                self._subtest_unpack(test_unpack)
+
+    def _subtest_unpack(self, test_unpack: TestUnPackData):
+        format = test_unpack["format"]
+        to_unpack = test_unpack["to_unpack"]
+        expected = test_unpack["expected_unpacked"]
+        # if ("a" in format) or ("A" in format) or ("Z" in format):
+        #     to_pack = [
+        #         item.encode() if isinstance(item, str) else item
+        #         for item in to_pack
+        #     ]
+        unpacked = list(unpack(format, to_unpack))
+        # to_pack_view = "[" + ", ".join(map(lambda s: f'"{s}"', to_pack)) + "]"
+        expected_view = self._format_array(expected)
+        unpacked_view = self._format_array(unpacked)
+        test_msg = f"Checking: pack({format}, {self._format_bytes(to_unpack)})/ Expected: \"{expected_view}\", actual: \"{unpacked_view}\""
+        self.assertListEqual(
+            expected,
+            unpacked,
+            test_msg,
+        )
+
+    def _format_array(self, arr):
+        return "[" + ", ".join(map(lambda s: f'"{s}"', arr)) + "]"

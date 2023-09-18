@@ -54,6 +54,29 @@ if (defined($test_cases->{test_pack})) {
         my $to_pack_view = '[' . join(', ', map {"\"$_\""} @to_pack) . ']';
         my $expected_view = format_binary($expected);
         my $packed_view = format_binary($packed);
-        ok($packed eq $expected, "Checking: pack($format, $to_pack_view)/ Expected: \"$expected_view\", actual: \"$packed_view\"");
+        my $test_message = "Checking: pack($format, $to_pack_view)/ Expected: \"$expected_view\", actual: \"$packed_view\"";
+        ok($packed eq $expected, $test_message);
+    }
+}
+
+
+if (defined($test_cases->{test_unpack})) {
+    my $unpack_test_cases = $test_cases->{test_unpack};
+    foreach my $unpack_test_case ((@{$unpack_test_cases})) {
+        my $format = $unpack_test_case->{format};
+        my $to_unpack_hexes = $unpack_test_case->{to_unpack};
+        # my $packed = pack($format, @to_pack);
+        my @expected_unpacked = @{ $unpack_test_case->{expected_unpacked} };
+
+        my $to_unpack = parse_binary_from_json($to_unpack_hexes);
+        # $expected = parse_binary_from_json($expected);
+
+        my @actual_unpacked = unpack($format, $to_unpack);
+
+        my $to_unpack_view = '[' . join(', ', map {"\"$_\""} @{$to_unpack_hexes}) . ']';
+        # my $expected_view = format_binary($expected);
+        # my $packed_view = format_binary($packed);
+        my $test_message = "Checking: unpack($format, $to_unpack_view)/ Expected: \"@expected_unpacked\", actual: \"@actual_unpacked\"";
+        ok(@actual_unpacked eq @expected_unpacked, $test_message);
     }
 }

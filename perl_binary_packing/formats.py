@@ -49,7 +49,7 @@ class PythonSupportedFormat(BaseBinaryFormat[T]):
 
     def unpack(self, data: bytes) -> UnpackResult[T]:
         size = self.get_bytes_length()
-        packed_data = struct.pack(self._get_format(), data)
+        packed_data = struct.unpack(self._get_format(), data)
         return UnpackResult(packed_data, size)
 
     def get_bytes_length(self) -> int:
@@ -173,6 +173,7 @@ class Float(PythonSupportedFormat[float]):
 
 
 class Double(PythonSupportedFormat[float]):
+    """ Perl не совсем соответствует IEEE754, а python реализует его. Проблема.."""
     # d
     _python_format = "d"
 
