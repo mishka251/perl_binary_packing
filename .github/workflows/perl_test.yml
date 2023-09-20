@@ -11,11 +11,15 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        perl-version: ["5.24.0", "5.30.0", "5.38.0" ]
     steps:
       - uses: actions/checkout@v2
-      - uses: shogo82148/actions-setup-perl@v1
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: shogo82148/actions-setup-perl@v1
         with:
-          perl-version: '5.8.9'
+          perl-version: ${{ matrix.perl-version }}
       - run: perl -V
 #      - run: perl -MConfig -MData::Dumper -e 'local $Data::Dumper::Sortkeys = 1;warn Dumper \%Config;'
 #      - run: perl cpanm ExtUtils::CBuilder
