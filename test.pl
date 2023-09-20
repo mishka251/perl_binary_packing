@@ -6,7 +6,7 @@ use File::Path qw(mkpath);
 use JSON::MaybeXS qw(encode_json decode_json);
 use Test;
 
-use Test::Simple tests => 59;
+use Test::Simple tests => 100;
 
 sub parse_binary_from_json {
     my $bytes = shift;
