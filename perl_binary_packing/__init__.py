@@ -8,10 +8,13 @@ def pack(format_str: str, *args) -> bytes:
     #     args = args[0]
     formats = parse_format(format_str)
     packed = b''
+    full_args = args
+    current_args = args
     for i, _format in enumerate(formats):
-        arg = args[i] if i < len(args) else None
-        _packed = _format.pack(arg)
-        packed += _packed
+        # arg = args[i] if i < len(args) else None
+        _packed = _format.pack(current_args)
+        packed += _packed.packed
+        current_args = current_args[_packed.packed_items_count:] if _packed.packed_items_count < len(current_args) else tuple()
     return packed
 
 

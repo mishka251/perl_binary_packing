@@ -1,6 +1,6 @@
 import dataclasses
 import struct
-from typing import Generic, TypeVar, Optional
+from typing import Generic, TypeVar, Optional, Iterable
 
 T = TypeVar("T")
 
@@ -16,11 +16,20 @@ class UnpackResult(Generic[T]):
     unpacked_bytes_length: int
 
 
+@dataclasses.dataclass
+class PackResult:
+    packed: bytes
+    packed_items_count: int
+
+
 class BaseBinaryFormat(Generic[T]):
-    def pack(self, value: Optional[T]) -> bytes:
+    def pack(self, values: tuple[T]) -> PackResult:
+        value = values[0] if values else None
         if self._value_is_empty(value):
-            return self._pack_none()
-        return self._pack(value)
+            packed = self._pack_none()
+            return PackResult(packed, 0)
+        packed = self._pack(value)
+        return PackResult(packed, 1)
 
     def _value_is_empty(self,  value: Optional[T]) -> bool:
         return value is None
@@ -216,12 +225,15 @@ class DynamicLenArray(BaseBinaryFormat[list[T]], Generic[T]):
         self._count_format = count_format
         self._item_format = inner_format
 
-    def _pack(self, value: list[T]) -> bytes:
+    def pack(self, values: tuple[T]) -> PackResult:
+        if not values:
+            packed = self._pack_none()
+            return PackResult(packed, 0)
         packed = b''
-        packed += self._count_format._pack(len(value))
-        for item in value:
+        packed += self._count_format._pack(len(values))
+        for item in values:
             packed += self._item_format._pack(item)
-        return packed
+        return PackResult(packed, len(values))
 
     def unpack(self, data: bytes) -> UnpackResult[list[T]]:
         result = []

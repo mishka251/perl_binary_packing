@@ -109,7 +109,7 @@ def parse_format(format_str: str) -> list[BaseBinaryFormat]:
             item_format = _parse_format_simple(item_format_str)
             current_format = DynamicLenArray(item_format, cont_format)
             formats.append(current_format)
-            format_len = len(count_format_str) + len(item_format_str)
+            format_len = len(count_format_str) + 1 + len(item_format_str)
             format_str_tmp = format_str_tmp[format_len:]
         elif match := re.match(with_static_count_format_re, format_str_tmp):
             count_str = match.group("count")
