@@ -15,7 +15,7 @@ class SubTestCase(Generic[T]):
 
 
 class BaseTestBinaryFormat(unittest.TestCase, Generic[T]):
-    examples: list[SubTestCase[T]]
+    examples: list[SubTestCase[T]] = []
     _format: BaseBinaryFormat[T]
 
     def _get_format(self) -> BaseBinaryFormat[T]:
@@ -39,4 +39,4 @@ class BaseTestBinaryFormat(unittest.TestCase, Generic[T]):
 
     def _unpack(self, data: bytes) -> T:
         format = self._get_format()
-        return format.unpack(data).data
+        return format.unpack(data).data[0]
