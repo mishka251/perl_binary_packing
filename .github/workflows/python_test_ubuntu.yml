@@ -1,4 +1,4 @@
-name: Python test
+name: Python test Ubuntu
 
 on: [push]
 
