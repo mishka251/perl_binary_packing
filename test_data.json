@@ -924,6 +924,53 @@
         "0x04"
       ],
       "expected_unpacked": [1, 2, 3, 4]
+    },
+        {
+      "format": "C/C",
+      "expected_unpacked": [
+        9, 8, 7, 6
+      ],
+      "to_unpack": [
+        "0x04",
+        "0x09",
+        "0x08",
+        "0x07",
+        "0x06"
+      ]
+    },
+        {
+      "format": "l/C",
+      "expected_unpacked": [
+        9, 8, 7, 6
+      ],
+      "to_unpack": [
+        "0x04",
+        "0x00",
+        "0x00",
+        "0x00",
+        "0x09",
+        "0x08",
+        "0x07",
+        "0x06"
+      ]
+    },
+            {
+      "format": "ccl/C",
+      "expected_unpacked": [
+        -1, 1, 9, 8, 7, 6
+      ],
+      "to_unpack": [
+        "0xff",
+        "0x01",
+        "0x04",
+        "0x00",
+        "0x00",
+        "0x00",
+        "0x09",
+        "0x08",
+        "0x07",
+        "0x06"
+      ]
     }
   ]
 }
