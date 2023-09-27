@@ -93,11 +93,11 @@ class TestFinal(unittest.TestCase):
         format = test_unpack["format"]
         to_unpack = test_unpack["to_unpack"]
         expected = test_unpack["expected_unpacked"]
-        # if ("a" in format) or ("A" in format) or ("Z" in format):
-        #     to_pack = [
-        #         item.encode() if isinstance(item, str) else item
-        #         for item in to_pack
-        #     ]
+        if ("a" in format) or ("A" in format) or ("Z" in format):
+            expected = [
+                item.encode() if isinstance(item, str) else item
+                for item in expected
+            ]
         unpacked = list(unpack(format, to_unpack))
         # to_pack_view = "[" + ", ".join(map(lambda s: f'"{s}"', to_pack)) + "]"
         expected_view = self._format_array(expected)

@@ -14,11 +14,19 @@ def pack(format_str: str, *args) -> bytes:
         # arg = args[i] if i < len(args) else None
         _packed = _format.pack(current_args)
         packed += _packed.packed
-        current_args = current_args[_packed.packed_items_count:] if _packed.packed_items_count < len(current_args) else tuple()
+        current_args = current_args[_packed.packed_items_count:] if _packed.packed_items_count < len(
+            current_args) else tuple()
     return packed
 
 
 def unpack(format_str: str, data: bytes) -> tuple[Any]:
+    try:
+        return _unpack(format_str, data)
+    except Exception as ex:
+        raise Exception(f"Error while unpacking {data} with {format_str=}") from ex
+
+
+def _unpack(format_str: str, data: bytes) -> tuple[Any]:
     formats = parse_format(format_str)
     result = []
     _data = data

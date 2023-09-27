@@ -77,6 +77,6 @@ if (defined($test_cases->{test_unpack})) {
         # my $expected_view = format_binary($expected);
         # my $packed_view = format_binary($packed);
         my $test_message = "Checking: unpack($format, $to_unpack_view)/ Expected: \"@expected_unpacked\", actual: \"@actual_unpacked\"";
-        ok(@actual_unpacked eq @expected_unpacked, $test_message);
+        ok(@actual_unpacked ~~ @expected_unpacked, $test_message);
     }
 }

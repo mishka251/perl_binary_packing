@@ -96,7 +96,7 @@ def _parse_format_simple(format_str: str) -> BaseBinaryFormat:
 
 def parse_format(format_str: str) -> list[BaseBinaryFormat]:
     with_dynamic_count_format_re = r"^(?P<count_format>.)/(?P<item_format>.)"
-    with_static_count_format_re = r"^(?P<item_format>.)(?P<count>\d+)"
+    with_static_count_format_re = r"^(?P<item_format>.)\[?(?P<count>\d+)\]?"
     with_unknown_count_format_re = r"^(?P<item_format>.)\*"
 
     format_str_tmp = format_str
@@ -109,7 +109,7 @@ def parse_format(format_str: str) -> list[BaseBinaryFormat]:
             item_format = _parse_format_simple(item_format_str)
             current_format = DynamicLenArray(item_format, cont_format)
             formats.append(current_format)
-            format_len = len(count_format_str) + 1 + len(item_format_str)
+            format_len = match.regs[0][1]-match.regs[0][0]
             format_str_tmp = format_str_tmp[format_len:]
         elif match := re.match(with_static_count_format_re, format_str_tmp):
             count_str = match.group("count")
@@ -129,7 +129,7 @@ def parse_format(format_str: str) -> list[BaseBinaryFormat]:
                 # current_format = FixedLenArray(item_format, count)
                 current_formats = [item_format]*count
                 formats.extend(current_formats)
-            format_len = len(count_str) + len(item_format_str)
+            format_len = match.regs[0][1]-match.regs[0][0]
             format_str_tmp = format_str_tmp[format_len:]
         elif match := re.match(with_unknown_count_format_re, format_str_tmp):
             item_format_str = match.group("item_format")

@@ -167,6 +167,19 @@
         "0x61"
       ]
     },
+        {
+      "format": "a[5]",
+      "to_pack": [
+        "aaaaaa"
+      ],
+      "expected_packed": [
+        "0x61",
+        "0x61",
+        "0x61",
+        "0x61",
+        "0x61"
+      ]
+    },
     {
       "format": "A",
       "to_pack": [
@@ -970,6 +983,66 @@
         "0x08",
         "0x07",
         "0x06"
+      ]
+    },
+            {
+      "format": "a[5]",
+      "expected_unpacked": [
+        "aaaaa"
+      ],
+      "to_unpack": [
+        "0x61",
+        "0x61",
+        "0x61",
+        "0x61",
+        "0x61"
+      ]
+    },
+      {
+      "format": "a[2]Z*Z*",
+      "expected_unpacked": [
+        "ab",
+        "cca",
+        "de"
+      ],
+      "to_unpack": [
+        "0x61",
+        "0x62",
+        "0x63",
+        "0x63",
+        "0x61",
+        "0x00",
+        "0x64",
+        "0x65",
+        "0x00"
+      ]
+    },
+     {
+      "format": "Z*",
+      "expected_unpacked": [
+        "abc"
+      ],
+      "to_unpack": [
+        "0x61",
+        "0x62",
+        "0x63",
+        "0x00"
+      ]
+    },
+       {
+      "format": "Z*a*",
+      "expected_unpacked": [
+        "abc",
+        "abc"
+      ],
+      "to_unpack": [
+        "0x61",
+        "0x62",
+        "0x63",
+        "0x00",
+        "0x61",
+        "0x62",
+        "0x63"
       ]
     }
   ]

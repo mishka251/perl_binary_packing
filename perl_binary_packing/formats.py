@@ -339,3 +339,20 @@ class UnlimitedAsciiZString(UnlimitedLenArray[bytes]):
 
     def _pack_none(self) -> bytes:
         return b'\0'
+
+    def unpack(self, data: bytes) -> UnpackResult[list[T]]:
+        result = []
+        total_bytes = 0
+
+        items_data = data
+        while items_data:
+            data_part = items_data[0:1]
+            unpack_res = self._item_format.unpack(data_part)
+            unpacked_item = unpack_res.data[0]
+            bytes_len = unpack_res.unpacked_bytes_length
+            result.append(unpacked_item)
+            total_bytes += bytes_len
+            items_data = items_data[bytes_len:]
+            if unpacked_item == 0:
+                break
+        return UnpackResult((bytes(result),), total_bytes)
