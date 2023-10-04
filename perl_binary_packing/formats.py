@@ -281,8 +281,18 @@ class UnlimitedLenArray(BaseBinaryFormat[list[T]], Generic[T]):
 
         items_data = data
         while items_data:
-            data_part = items_data
-            unpacked_item, bytes_len = self._item_format.unpack(data_part)
+            needed_len = None
+            try:
+                needed_len = self._item_format.get_bytes_length()
+            except NotImplementedError:
+                pass
+            if needed_len:
+                data_part = items_data[0:needed_len]
+            else:
+                data_part = items_data
+            unpack_res = self._item_format.unpack(data_part)
+            unpacked_item = unpack_res.data[0]
+            bytes_len = unpack_res.unpacked_bytes_length
             result.append(unpacked_item)
             total_bytes += bytes_len
             items_data = items_data[bytes_len:]
@@ -328,6 +338,14 @@ class AsciiNullPaddedStr(PythonSupportedFormat[bytes]):
 
     def _pack(self, value: list[bytes]) -> bytes:
         return super()._pack(value) + b'\0'
+
+
+class UnlimitedAsciiString(UnlimitedLenArray[bytes]):
+
+    def unpack(self, data: bytes) -> UnpackResult[list[T]]:
+        result = super().unpack(data)
+
+        return UnpackResult((bytes(result.data), ), result.unpacked_bytes_length)
 
 
 class UnlimitedAsciiZString(UnlimitedLenArray[bytes]):

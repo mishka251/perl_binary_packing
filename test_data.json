@@ -167,7 +167,7 @@
         "0x61"
       ]
     },
-        {
+    {
       "format": "a[5]",
       "to_pack": [
         "aaaaaa"
@@ -804,7 +804,7 @@
         "0x38"
       ]
     },
-        {
+    {
       "format": "f",
       "to_pack": [
         0.25
@@ -840,7 +840,7 @@
         "0x41"
       ]
     },
-      {
+    {
       "format": "f",
       "to_pack": [
         -22
@@ -867,7 +867,10 @@
     {
       "format": "C/C",
       "to_pack": [
-        9, 8, 7, 6
+        9,
+        8,
+        7,
+        6
       ],
       "expected_packed": [
         "0x04",
@@ -877,10 +880,13 @@
         "0x06"
       ]
     },
-        {
+    {
       "format": "l/C",
       "to_pack": [
-        9, 8, 7, 6
+        9,
+        8,
+        7,
+        6
       ],
       "expected_packed": [
         "0x04",
@@ -893,10 +899,15 @@
         "0x06"
       ]
     },
-            {
+    {
       "format": "ccl/C",
       "to_pack": [
-        -1, 1, 9, 8, 7, 6
+        -1,
+        1,
+        9,
+        8,
+        7,
+        6
       ],
       "expected_packed": [
         "0xff",
@@ -919,16 +930,30 @@
         "0x01",
         "0x02"
       ],
-      "expected_unpacked": [1,2]
-    },
+      "expected_unpacked": [
         {
+          "type": "int",
+          "value": 1
+        },
+        {
+          "type": "int",
+          "value": 2
+        }
+      ]
+    },
+    {
       "format": "C",
       "to_unpack": [
         "0xff"
       ],
-      "expected_unpacked": [255]
+      "expected_unpacked": [
+        {
+          "type": "int",
+          "value": 255
+        }
+      ]
     },
-     {
+    {
       "format": "CCCC",
       "to_unpack": [
         "0x01",
@@ -936,12 +961,44 @@
         "0x03",
         "0x04"
       ],
-      "expected_unpacked": [1, 2, 3, 4]
-    },
+      "expected_unpacked": [
         {
+          "type": "int",
+          "value": 1
+        },
+        {
+          "type": "int",
+          "value": 2
+        },
+        {
+          "type": "int",
+          "value": 3
+        },
+        {
+          "type": "int",
+          "value": 4
+        }
+      ]
+    },
+    {
       "format": "C/C",
       "expected_unpacked": [
-        9, 8, 7, 6
+        {
+          "type": "int",
+          "value": 9
+        },
+        {
+          "type": "int",
+          "value": 8
+        },
+        {
+          "type": "int",
+          "value": 7
+        },
+        {
+          "type": "int",
+          "value": 6
+        }
       ],
       "to_unpack": [
         "0x04",
@@ -951,10 +1008,25 @@
         "0x06"
       ]
     },
-        {
+    {
       "format": "l/C",
       "expected_unpacked": [
-        9, 8, 7, 6
+        {
+          "type": "int",
+          "value": 9
+        },
+        {
+          "type": "int",
+          "value": 8
+        },
+        {
+          "type": "int",
+          "value": 7
+        },
+        {
+          "type": "int",
+          "value": 6
+        }
       ],
       "to_unpack": [
         "0x04",
@@ -967,10 +1039,33 @@
         "0x06"
       ]
     },
-            {
+    {
       "format": "ccl/C",
       "expected_unpacked": [
-        -1, 1, 9, 8, 7, 6
+        {
+          "type": "int",
+          "value": -1
+        },
+        {
+          "type": "int",
+          "value": 1
+        },
+        {
+          "type": "int",
+          "value": 9
+        },
+        {
+          "type": "int",
+          "value": 8
+        },
+        {
+          "type": "int",
+          "value": 7
+        },
+        {
+          "type": "int",
+          "value": 6
+        }
       ],
       "to_unpack": [
         "0xff",
@@ -985,10 +1080,13 @@
         "0x06"
       ]
     },
-            {
+    {
       "format": "a[5]",
       "expected_unpacked": [
-        "aaaaa"
+        {
+          "type": "bytes",
+          "value": "aaaaa"
+        }
       ],
       "to_unpack": [
         "0x61",
@@ -998,12 +1096,21 @@
         "0x61"
       ]
     },
-      {
+    {
       "format": "a[2]Z*Z*",
       "expected_unpacked": [
-        "ab",
-        "cca",
-        "de"
+        {
+          "type": "bytes",
+          "value": "ab"
+        },
+        {
+          "type": "bytes",
+          "value": "cca0x00"
+        },
+        {
+          "type": "bytes",
+          "value": "de0x00"
+        }
       ],
       "to_unpack": [
         "0x61",
@@ -1017,10 +1124,13 @@
         "0x00"
       ]
     },
-     {
+    {
       "format": "Z*",
       "expected_unpacked": [
-        "abc"
+        {
+          "type": "bytes",
+          "value": "abc0x00"
+        }
       ],
       "to_unpack": [
         "0x61",
@@ -1029,11 +1139,17 @@
         "0x00"
       ]
     },
-       {
+    {
       "format": "Z*a*",
       "expected_unpacked": [
-        "abc",
-        "abc"
+        {
+          "type": "bytes",
+          "value": "abc0x00"
+        },
+        {
+          "type": "bytes",
+          "value": "abc"
+        }
       ],
       "to_unpack": [
         "0x61",
@@ -1043,6 +1159,78 @@
         "0x61",
         "0x62",
         "0x63"
+      ]
+    },
+    {
+      "format": "a*",
+      "expected_unpacked": [
+        {
+          "type": "bytes",
+          "value": "abc"
+        }
+      ],
+      "to_unpack": [
+        "0x61",
+        "0x62",
+        "0x63"
+      ]
+    },
+    {
+      "format": "A*",
+      "expected_unpacked": [
+        {
+          "type": "bytes",
+          "value": "abc"
+        }
+      ],
+      "to_unpack": [
+        "0x61",
+        "0x62",
+        "0x63"
+      ]
+    },
+    {
+      "format": "c*",
+      "expected_unpacked": [
+        {
+          "type": "int",
+          "value": 1
+        },
+        {
+          "type": "int",
+          "value": 2
+        },
+        {
+          "type": "int",
+          "value": 3
+        }
+      ],
+      "to_unpack": [
+        "0x01",
+        "0x02",
+        "0x03"
+      ]
+    },
+    {
+      "format": "C*",
+      "expected_unpacked": [
+        {
+          "type": "int",
+          "value": 1
+        },
+        {
+          "type": "int",
+          "value": 2
+        },
+        {
+          "type": "int",
+          "value": 3
+        }
+      ],
+      "to_unpack": [
+        "0x01",
+        "0x02",
+        "0x03"
       ]
     }
   ]

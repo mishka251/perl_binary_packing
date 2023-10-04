@@ -6,7 +6,7 @@ use File::Path qw(mkpath);
 use JSON::MaybeXS qw(encode_json decode_json);
 use Test;
 
-use Test::Simple tests => 86;
+use Test::Simple tests => 98;
 
 sub parse_binary_from_json {
     my $bytes = shift;
@@ -66,8 +66,11 @@ if (defined($test_cases->{test_unpack})) {
         my $format = $unpack_test_case->{format};
         my $to_unpack_hexes = $unpack_test_case->{to_unpack};
         # my $packed = pack($format, @to_pack);
-        my @expected_unpacked = @{ $unpack_test_case->{expected_unpacked} };
-
+        my @expected_unpacked_objects = @{$unpack_test_case->{expected_unpacked}};
+        my @expected_unpacked;
+        foreach my $expected_object (@expected_unpacked_objects) {
+            push @expected_unpacked, $expected_object->{value};
+        }
         my $to_unpack = parse_binary_from_json($to_unpack_hexes);
         # $expected = parse_binary_from_json($expected);
 

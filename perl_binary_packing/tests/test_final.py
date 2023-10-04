@@ -89,22 +89,29 @@ class TestFinal(unittest.TestCase):
             with self.subTest(**test_unpack):
                 self._subtest_unpack(test_unpack)
 
+    def _format_expected(self, expected_object: dict) -> Any:
+        _type = expected_object["type"]
+        raw_value = expected_object["value"]
+        possible_types = {
+            "str": str,
+            "bytes": lambda s: s.replace("0x00", "\0").encode(),
+            "int": int,
+            "float": float,
+        }
+        return possible_types[_type](raw_value)
+
     def _subtest_unpack(self, test_unpack: TestUnPackData):
         format = test_unpack["format"]
         to_unpack = test_unpack["to_unpack"]
-        expected = test_unpack["expected_unpacked"]
-        if ("a" in format) or ("A" in format) or ("Z" in format):
-            expected = [
-                item.encode() if isinstance(item, str) else item
-                for item in expected
-            ]
+        expected_objects = test_unpack["expected_unpacked"]
+        expected_values = [self._format_expected(expected_object) for expected_object in expected_objects]
         unpacked = list(unpack(format, to_unpack))
         # to_pack_view = "[" + ", ".join(map(lambda s: f'"{s}"', to_pack)) + "]"
-        expected_view = self._format_array(expected)
+        expected_view = self._format_array(expected_values)
         unpacked_view = self._format_array(unpacked)
         test_msg = f"Checking: pack({format}, {self._format_bytes(to_unpack)})/ Expected: \"{expected_view}\", actual: \"{unpacked_view}\""
         self.assertListEqual(
-            expected,
+            expected_values,
             unpacked,
             test_msg,
         )

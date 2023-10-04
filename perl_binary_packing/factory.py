@@ -24,6 +24,7 @@ from perl_binary_packing.formats import (
     DynamicLenArray,
     FixedLenArray,
     UnlimitedLenArray, FixedLenNullPaddedStr, FixedLenSpacePaddedStr, AsciiNullPaddedStr, UnlimitedAsciiZString,
+    UnlimitedAsciiString,
 )
 
 simple_formats = {
@@ -138,7 +139,7 @@ def parse_format(format_str: str) -> list[BaseBinaryFormat]:
                 current_format = UnlimitedAsciiZString()
             elif item_format_str in binary_string_formats:
                 item_format = SignedChar()
-                current_format = UnlimitedLenArray(item_format)
+                current_format = UnlimitedAsciiString(item_format)
             else:
                 item_format = _parse_format_simple(item_format_str)
                 current_format = UnlimitedLenArray(item_format)
