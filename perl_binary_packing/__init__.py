@@ -40,7 +40,10 @@ def _unpack(format_str: str, data: bytes) -> tuple[Any]:
             data_part = _data[0:needed_len]
         else:
             data_part = _data
-        unpack_result = _format.unpack(data_part)
+        try:
+            unpack_result = _format.unpack(data_part)
+        except Exception as ex:
+            raise ValueError(f"Unpack error {_format=}, {data_part=}") from ex
         result.extend(unpack_result.data)
         if unpack_result.unpacked_bytes_length < len(data):
             _data = _data[unpack_result.unpacked_bytes_length:]

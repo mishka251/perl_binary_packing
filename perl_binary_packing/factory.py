@@ -138,7 +138,7 @@ def parse_format(format_str: str) -> list[BaseBinaryFormat]:
             if item_format_str == "Z":
                 current_format = UnlimitedAsciiZString()
             elif item_format_str in binary_string_formats:
-                item_format = SignedChar()
+                item_format = UnSignedChar()
                 current_format = UnlimitedAsciiString(item_format)
             else:
                 item_format = _parse_format_simple(item_format_str)

@@ -1104,12 +1104,12 @@
           "value": "ab"
         },
         {
-          "type": "bytes",
-          "value": "cca0x00"
+          "type": "str",
+          "value": "cca"
         },
         {
-          "type": "bytes",
-          "value": "de0x00"
+          "type": "str",
+          "value": "de"
         }
       ],
       "to_unpack": [
@@ -1128,8 +1128,8 @@
       "format": "Z*",
       "expected_unpacked": [
         {
-          "type": "bytes",
-          "value": "abc0x00"
+          "type": "str",
+          "value": "abc"
         }
       ],
       "to_unpack": [
@@ -1143,8 +1143,8 @@
       "format": "Z*a*",
       "expected_unpacked": [
         {
-          "type": "bytes",
-          "value": "abc0x00"
+          "type": "str",
+          "value": "abc"
         },
         {
           "type": "bytes",

@@ -69,7 +69,14 @@ if (defined($test_cases->{test_unpack})) {
         my @expected_unpacked_objects = @{$unpack_test_case->{expected_unpacked}};
         my @expected_unpacked;
         foreach my $expected_object (@expected_unpacked_objects) {
-            push @expected_unpacked, $expected_object->{value};
+            my $raw_expected_value = $expected_object->{value};
+            my $expected_value = $raw_expected_value;
+            if($expected_object->{type} eq "bytes"){
+                my $find="0x00";
+                my $replace="";
+                $expected_value =~ s/$find/$replace/;
+            }
+            push @expected_unpacked, $expected_value;
         }
         my $to_unpack = parse_binary_from_json($to_unpack_hexes);
         # $expected = parse_binary_from_json($expected);

@@ -339,6 +339,10 @@ class AsciiNullPaddedStr(PythonSupportedFormat[bytes]):
     def _pack(self, value: list[bytes]) -> bytes:
         return super()._pack(value) + b'\0'
 
+    def unpack(self, data: bytes) -> UnpackResult[T]:
+        result = super().unpack(data)
+        return UnpackResult((result.data[0].decode(),), result.unpacked_bytes_length)
+
 
 class UnlimitedAsciiString(UnlimitedLenArray[bytes]):
 
@@ -350,7 +354,7 @@ class UnlimitedAsciiString(UnlimitedLenArray[bytes]):
 
 class UnlimitedAsciiZString(UnlimitedLenArray[bytes]):
     def __init__(self):
-        super().__init__(SignedChar())
+        super().__init__(UnSignedChar())
 
     def _pack(self, value: list[bytes]) -> bytes:
         return super()._pack(value) + b'\0'
@@ -368,9 +372,10 @@ class UnlimitedAsciiZString(UnlimitedLenArray[bytes]):
             unpack_res = self._item_format.unpack(data_part)
             unpacked_item = unpack_res.data[0]
             bytes_len = unpack_res.unpacked_bytes_length
+            if unpacked_item == 0:
+                total_bytes += bytes_len
+                break
             result.append(unpacked_item)
             total_bytes += bytes_len
             items_data = items_data[bytes_len:]
-            if unpacked_item == 0:
-                break
-        return UnpackResult((bytes(result),), total_bytes)
+        return UnpackResult((bytes(result).decode("cp1251"),), total_bytes)
