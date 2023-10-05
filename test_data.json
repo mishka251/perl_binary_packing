@@ -1232,6 +1232,23 @@
         "0x02",
         "0x03"
       ]
+    },
+    {
+      "format": "V/va*",
+      "expected_unpacked": [
+        {
+          "type": "bytes",
+          "value": "ab"
+        }
+      ],
+      "to_unpack": [
+        "0x00",
+        "0x00",
+        "0x00",
+        "0x00",
+        "0x61",
+        "0x62"
+      ]
     }
   ]
 }

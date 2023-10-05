@@ -242,6 +242,7 @@ class DynamicLenArray(BaseBinaryFormat[list[T]], Generic[T]):
         count = count_unpack_result.data[0]
 
         items_data = data[count_unpack_result.unpacked_bytes_length:]
+        total_bytes += count_unpack_result.unpacked_bytes_length
         for _ in range(count):
             needed_len = None
             try:
