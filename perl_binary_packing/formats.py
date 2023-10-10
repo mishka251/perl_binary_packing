@@ -357,8 +357,9 @@ class UnlimitedAsciiZString(UnlimitedLenArray[bytes]):
     def __init__(self):
         super().__init__(UnSignedChar())
 
-    def _pack(self, value: list[bytes]) -> bytes:
-        return super()._pack(value) + b'\0'
+    def _pack(self, value: str) -> bytes:
+        bytes_str = value.encode("cp1251")
+        return super()._pack(bytes_str) + b'\0'
 
     def _pack_none(self) -> bytes:
         return b'\0'

@@ -2,8 +2,14 @@ from typing import Any
 
 from perl_binary_packing.factory import parse_format
 
-
 def pack(format_str: str, *args) -> bytes:
+    try:
+        return _pack(format_str, *args)
+    except Exception as ex:
+        raise Exception(f"Error while packing {args} with {format_str=}") from ex
+
+
+def _pack(format_str: str, *args) -> bytes:
     # if len(args) == 1 and isinstance(args[0], (list, tuple)):
     #     args = args[0]
     formats = parse_format(format_str)
@@ -12,7 +18,10 @@ def pack(format_str: str, *args) -> bytes:
     current_args = args
     for i, _format in enumerate(formats):
         # arg = args[i] if i < len(args) else None
-        _packed = _format.pack(current_args)
+        try:
+            _packed = _format.pack(current_args)
+        except Exception as ex:
+            raise ValueError(f"Error pack {_format=} {current_args=}") from ex
         packed += _packed.packed
         current_args = current_args[_packed.packed_items_count:] if _packed.packed_items_count < len(
             current_args) else tuple()
