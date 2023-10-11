@@ -3,7 +3,10 @@
     {
       "format": "a",
       "to_pack": [
-        "a"
+        {
+          "type": "bytes",
+          "value": "a"
+        }
       ],
       "expected_packed": [
         "0x61"
@@ -12,7 +15,10 @@
     {
       "format": "a",
       "to_pack": [
-        "1"
+        {
+          "type": "bytes",
+          "value": "1"
+        }
       ],
       "expected_packed": [
         "0x31"
@@ -21,7 +27,10 @@
     {
       "format": "a",
       "to_pack": [
-        "`"
+        {
+          "type": "bytes",
+          "value": "`"
+        }
       ],
       "expected_packed": [
         "0x60"
@@ -30,7 +39,10 @@
     {
       "format": "a",
       "to_pack": [
-        "aaaaaa"
+        {
+          "type": "bytes",
+          "value": "aaaaaa"
+        }
       ],
       "expected_packed": [
         "0x61"
@@ -39,7 +51,10 @@
     {
       "format": "a",
       "to_pack": [
-        ""
+        {
+          "type": "bytes",
+          "value": ""
+        }
       ],
       "expected_packed": [
         "0x00"
@@ -56,7 +71,10 @@
     {
       "format": "aaaa",
       "to_pack": [
-        "abcd"
+        {
+          "type": "bytes",
+          "value": "abcd"
+        }
       ],
       "expected_packed": [
         "0x61",
@@ -68,7 +86,10 @@
     {
       "format": "aaaa",
       "to_pack": [
-        "a"
+        {
+          "type": "bytes",
+          "value": "a"
+        }
       ],
       "expected_packed": [
         "0x61",
@@ -80,7 +101,10 @@
     {
       "format": "a4",
       "to_pack": [
-        "abcd"
+        {
+          "type": "bytes",
+          "value": "abcd"
+        }
       ],
       "expected_packed": [
         "0x61",
@@ -92,10 +116,22 @@
     {
       "format": "aaaa",
       "to_pack": [
-        "a",
-        "b",
-        "c",
-        "d"
+        {
+          "type": "bytes",
+          "value": "a"
+        },
+        {
+          "type": "bytes",
+          "value": "b"
+        },
+        {
+          "type": "bytes",
+          "value": "c"
+        },
+        {
+          "type": "bytes",
+          "value": "d"
+        }
       ],
       "expected_packed": [
         "0x61",
@@ -107,7 +143,10 @@
     {
       "format": "a*",
       "to_pack": [
-        "abcd"
+        {
+          "type": "bytes",
+          "value": "abcd"
+        }
       ],
       "expected_packed": [
         "0x61",
@@ -126,7 +165,10 @@
     {
       "format": "a*",
       "to_pack": [
-        ""
+        {
+          "type": "bytes",
+          "value": ""
+        }
       ],
       "expected_packed": [
       ]
@@ -134,7 +176,10 @@
     {
       "format": "a*",
       "to_pack": [
-        " "
+        {
+          "type": "bytes",
+          "value": " "
+        }
       ],
       "expected_packed": [
         "0x20"
@@ -143,7 +188,10 @@
     {
       "format": "A",
       "to_pack": [
-        "a"
+        {
+          "type": "bytes",
+          "value": "a"
+        }
       ],
       "expected_packed": [
         "0x61"
@@ -152,7 +200,10 @@
     {
       "format": "A",
       "to_pack": [
-        "z"
+        {
+          "type": "bytes",
+          "value": "z"
+        }
       ],
       "expected_packed": [
         "0x7a"
@@ -161,7 +212,10 @@
     {
       "format": "a",
       "to_pack": [
-        "aaaaaa"
+        {
+          "type": "bytes",
+          "value": "aaaaaa"
+        }
       ],
       "expected_packed": [
         "0x61"
@@ -170,7 +224,10 @@
     {
       "format": "a[5]",
       "to_pack": [
-        "aaaaaa"
+        {
+          "type": "bytes",
+          "value": "aaaaaa"
+        }
       ],
       "expected_packed": [
         "0x61",
@@ -183,7 +240,10 @@
     {
       "format": "A",
       "to_pack": [
-        ""
+        {
+          "type": "bytes",
+          "value": ""
+        }
       ],
       "expected_packed": [
         "0x20"
@@ -200,7 +260,10 @@
     {
       "format": "AAAA",
       "to_pack": [
-        "abcd"
+        {
+          "type": "bytes",
+          "value": "abcd"
+        }
       ],
       "expected_packed": [
         "0x61",
@@ -212,7 +275,10 @@
     {
       "format": "AAAA",
       "to_pack": [
-        "a"
+        {
+          "type": "bytes",
+          "value": "a"
+        }
       ],
       "expected_packed": [
         "0x61",
@@ -224,7 +290,10 @@
     {
       "format": "A4",
       "to_pack": [
-        "abcd"
+        {
+          "type": "bytes",
+          "value": "abcd"
+        }
       ],
       "expected_packed": [
         "0x61",
@@ -236,10 +305,22 @@
     {
       "format": "AAAA",
       "to_pack": [
-        "a",
-        "b",
-        "c",
-        "d"
+        {
+          "type": "bytes",
+          "value": "a"
+        },
+        {
+          "type": "bytes",
+          "value": "b"
+        },
+        {
+          "type": "bytes",
+          "value": "c"
+        },
+        {
+          "type": "bytes",
+          "value": "d"
+        }
       ],
       "expected_packed": [
         "0x61",
@@ -251,7 +332,10 @@
     {
       "format": "A",
       "to_pack": [
-        "a"
+        {
+          "type": "bytes",
+          "value": "a"
+        }
       ],
       "expected_packed": [
         "0x61"
@@ -260,7 +344,10 @@
     {
       "format": "A",
       "to_pack": [
-        "z"
+        {
+          "type": "bytes",
+          "value": "z"
+        }
       ],
       "expected_packed": [
         "0x7a"
@@ -269,7 +356,10 @@
     {
       "format": "A*",
       "to_pack": [
-        "abcd"
+        {
+          "type": "bytes",
+          "value": "abcd"
+        }
       ],
       "expected_packed": [
         "0x61",
@@ -288,7 +378,10 @@
     {
       "format": "A*",
       "to_pack": [
-        ""
+        {
+          "type": "bytes",
+          "value": ""
+        }
       ],
       "expected_packed": [
       ]
@@ -296,7 +389,10 @@
     {
       "format": "A*",
       "to_pack": [
-        " "
+        {
+          "type": "bytes",
+          "value": " "
+        }
       ],
       "expected_packed": [
         "0x20"
@@ -305,7 +401,10 @@
     {
       "format": "a",
       "to_pack": [
-        "aaaaaa"
+        {
+          "type": "bytes",
+          "value": "aaaaaa"
+        }
       ],
       "expected_packed": [
         "0x61"
@@ -314,7 +413,10 @@
     {
       "format": "Z",
       "to_pack": [
-        ""
+        {
+          "type": "bytes",
+          "value": ""
+        }
       ],
       "expected_packed": [
         "0x00"
@@ -331,7 +433,10 @@
     {
       "format": "ZZZZ",
       "to_pack": [
-        "abcd"
+        {
+          "type": "bytes",
+          "value": "abcd"
+        }
       ],
       "expected_packed": [
         "0x00",
@@ -343,7 +448,10 @@
     {
       "format": "ZZZZ",
       "to_pack": [
-        "a"
+        {
+          "type": "bytes",
+          "value": "a"
+        }
       ],
       "expected_packed": [
         "0x00",
@@ -355,7 +463,10 @@
     {
       "format": "Z4",
       "to_pack": [
-        "abcd"
+        {
+          "type": "bytes",
+          "value": "abcd"
+        }
       ],
       "expected_packed": [
         "0x61",
@@ -367,10 +478,22 @@
     {
       "format": "ZZZZ",
       "to_pack": [
-        "a",
-        "b",
-        "c",
-        "d"
+        {
+          "type": "bytes",
+          "value": "a"
+        },
+        {
+          "type": "bytes",
+          "value": "b"
+        },
+        {
+          "type": "bytes",
+          "value": "c"
+        },
+        {
+          "type": "bytes",
+          "value": "d"
+        }
       ],
       "expected_packed": [
         "0x00",
@@ -382,7 +505,10 @@
     {
       "format": "Z*",
       "to_pack": [
-        ""
+        {
+          "type": "str",
+          "value": ""
+        }
       ],
       "expected_packed": [
         "0x00"
@@ -399,7 +525,10 @@
     {
       "format": "Z*",
       "to_pack": [
-        "abcd"
+        {
+          "type": "str",
+          "value": "abcd"
+        }
       ],
       "expected_packed": [
         "0x61",
@@ -412,7 +541,10 @@
     {
       "format": "Z*",
       "to_pack": [
-        "a"
+        {
+          "type": "str",
+          "value": "a"
+        }
       ],
       "expected_packed": [
         "0x61",
@@ -422,7 +554,10 @@
     {
       "format": "Z*",
       "to_pack": [
-        "abcd"
+        {
+          "type": "str",
+          "value": "abcd"
+        }
       ],
       "expected_packed": [
         "0x61",
@@ -435,10 +570,22 @@
     {
       "format": "Z*",
       "to_pack": [
-        "a",
-        "b",
-        "c",
-        "d"
+        {
+          "type": "str",
+          "value": "a"
+        },
+        {
+          "type": "str",
+          "value": "b"
+        },
+        {
+          "type": "str",
+          "value": "c"
+        },
+        {
+          "type": "str",
+          "value": "d"
+        }
       ],
       "expected_packed": [
         "0x61",
@@ -448,7 +595,10 @@
     {
       "format": "c",
       "to_pack": [
-        0
+        {
+          "type": "int",
+          "value": 0
+        }
       ],
       "expected_packed": [
         "0x00"
@@ -457,7 +607,10 @@
     {
       "format": "c",
       "to_pack": [
-        127
+        {
+          "type": "int",
+          "value": 127
+        }
       ],
       "expected_packed": [
         "0x7f"
@@ -466,7 +619,10 @@
     {
       "format": "c",
       "to_pack": [
-        1
+        {
+          "type": "int",
+          "value": 1
+        }
       ],
       "expected_packed": [
         "0x01"
@@ -475,7 +631,10 @@
     {
       "format": "c",
       "to_pack": [
-        10
+        {
+          "type": "int",
+          "value": 10
+        }
       ],
       "expected_packed": [
         "0x0a"
@@ -484,7 +643,10 @@
     {
       "format": "c",
       "to_pack": [
-        -1
+        {
+          "type": "int",
+          "value": -1
+        }
       ],
       "expected_packed": [
         "0xff"
@@ -493,7 +655,10 @@
     {
       "format": "c",
       "to_pack": [
-        -120
+        {
+          "type": "int",
+          "value": -120
+        }
       ],
       "expected_packed": [
         "0x88"
@@ -502,7 +667,10 @@
     {
       "format": "ccc",
       "to_pack": [
-        5
+        {
+          "type": "int",
+          "value": 5
+        }
       ],
       "expected_packed": [
         "0x05",
@@ -513,11 +681,26 @@
     {
       "format": "ccc",
       "to_pack": [
-        6,
-        7,
-        8,
-        9,
-        10
+        {
+          "type": "int",
+          "value": 6
+        },
+        {
+          "type": "int",
+          "value": 7
+        },
+        {
+          "type": "int",
+          "value": 8
+        },
+        {
+          "type": "int",
+          "value": 9
+        },
+        {
+          "type": "int",
+          "value": 10
+        }
       ],
       "expected_packed": [
         "0x06",
@@ -528,7 +711,10 @@
     {
       "format": "C",
       "to_pack": [
-        0
+        {
+          "type": "int",
+          "value": 0
+        }
       ],
       "expected_packed": [
         "0x00"
@@ -537,7 +723,10 @@
     {
       "format": "C",
       "to_pack": [
-        127
+        {
+          "type": "int",
+          "value": 127
+        }
       ],
       "expected_packed": [
         "0x7f"
@@ -546,7 +735,10 @@
     {
       "format": "C",
       "to_pack": [
-        1
+        {
+          "type": "int",
+          "value": 1
+        }
       ],
       "expected_packed": [
         "0x01"
@@ -555,7 +747,10 @@
     {
       "format": "C",
       "to_pack": [
-        10
+        {
+          "type": "int",
+          "value": 10
+        }
       ],
       "expected_packed": [
         "0x0a"
@@ -564,7 +759,10 @@
     {
       "format": "C",
       "to_pack": [
-        170
+        {
+          "type": "int",
+          "value": 170
+        }
       ],
       "expected_packed": [
         "0xaa"
@@ -573,7 +771,10 @@
     {
       "format": "C",
       "to_pack": [
-        210
+        {
+          "type": "int",
+          "value": 210
+        }
       ],
       "expected_packed": [
         "0xd2"
@@ -582,7 +783,10 @@
     {
       "format": "C",
       "to_pack": [
-        255
+        {
+          "type": "int",
+          "value": 255
+        }
       ],
       "expected_packed": [
         "0xff"
@@ -591,7 +795,10 @@
     {
       "format": "CCC",
       "to_pack": [
-        5
+        {
+          "type": "int",
+          "value": 5
+        }
       ],
       "expected_packed": [
         "0x05",
@@ -602,11 +809,26 @@
     {
       "format": "CCC",
       "to_pack": [
-        6,
-        7,
-        8,
-        9,
-        10
+        {
+          "type": "int",
+          "value": 6
+        },
+        {
+          "type": "int",
+          "value": 7
+        },
+        {
+          "type": "int",
+          "value": 8
+        },
+        {
+          "type": "int",
+          "value": 9
+        },
+        {
+          "type": "int",
+          "value": 10
+        }
       ],
       "expected_packed": [
         "0x06",
@@ -617,11 +839,26 @@
     {
       "format": "C3",
       "to_pack": [
-        6,
-        7,
-        8,
-        9,
-        10
+        {
+          "type": "int",
+          "value": 6
+        },
+        {
+          "type": "int",
+          "value": 7
+        },
+        {
+          "type": "int",
+          "value": 8
+        },
+        {
+          "type": "int",
+          "value": 9
+        },
+        {
+          "type": "int",
+          "value": 10
+        }
       ],
       "expected_packed": [
         "0x06",
@@ -632,11 +869,26 @@
     {
       "format": "C3Z3C",
       "to_pack": [
-        6,
-        7,
-        8,
-        "abcd",
-        9
+        {
+          "type": "int",
+          "value": 6
+        },
+        {
+          "type": "int",
+          "value": 7
+        },
+        {
+          "type": "int",
+          "value": 8
+        },
+        {
+          "type": "bytes",
+          "value": "abcd"
+        },
+        {
+          "type": "int",
+          "value": 9
+        }
       ],
       "expected_packed": [
         "0x06",
@@ -651,7 +903,10 @@
     {
       "format": "s",
       "to_pack": [
-        0
+        {
+          "type": "int",
+          "value": 0
+        }
       ],
       "expected_packed": [
         "0x00",
@@ -661,7 +916,10 @@
     {
       "format": "s",
       "to_pack": [
-        -32768
+        {
+          "type": "int",
+          "value": -32768
+        }
       ],
       "expected_packed": [
         "0x00",
@@ -671,7 +929,10 @@
     {
       "format": "s",
       "to_pack": [
-        32767
+        {
+          "type": "int",
+          "value": 32767
+        }
       ],
       "expected_packed": [
         "0xff",
@@ -681,7 +942,10 @@
     {
       "format": "S",
       "to_pack": [
-        0
+        {
+          "type": "int",
+          "value": 0
+        }
       ],
       "expected_packed": [
         "0x00",
@@ -691,7 +955,10 @@
     {
       "format": "S",
       "to_pack": [
-        32768
+        {
+          "type": "int",
+          "value": 32768
+        }
       ],
       "expected_packed": [
         "0x00",
@@ -701,7 +968,10 @@
     {
       "format": "S",
       "to_pack": [
-        65535
+        {
+          "type": "int",
+          "value": 65535
+        }
       ],
       "expected_packed": [
         "0xff",
@@ -711,7 +981,10 @@
     {
       "format": "l",
       "to_pack": [
-        0
+        {
+          "type": "int",
+          "value": 0
+        }
       ],
       "expected_packed": [
         "0x00",
@@ -723,7 +996,10 @@
     {
       "format": "l",
       "to_pack": [
-        -2147483648
+        {
+          "type": "int",
+          "value": -2147483648
+        }
       ],
       "expected_packed": [
         "0x00",
@@ -735,7 +1011,10 @@
     {
       "format": "l",
       "to_pack": [
-        2147483647
+        {
+          "type": "int",
+          "value": 2147483647
+        }
       ],
       "expected_packed": [
         "0xff",
@@ -747,7 +1026,10 @@
     {
       "format": "L",
       "to_pack": [
-        0
+        {
+          "type": "int",
+          "value": 0
+        }
       ],
       "expected_packed": [
         "0x00",
@@ -759,7 +1041,10 @@
     {
       "format": "L",
       "to_pack": [
-        2147483648
+        {
+          "type": "int",
+          "value": 2147483648
+        }
       ],
       "expected_packed": [
         "0x00",
@@ -771,7 +1056,10 @@
     {
       "format": "L",
       "to_pack": [
-        4294967295
+        {
+          "type": "int",
+          "value": 4294967295
+        }
       ],
       "expected_packed": [
         "0xff",
@@ -783,7 +1071,10 @@
     {
       "format": "f",
       "to_pack": [
-        0
+        {
+          "type": "float",
+          "value": 0
+        }
       ],
       "expected_packed": [
         "0x00",
@@ -795,7 +1086,10 @@
     {
       "format": "f",
       "to_pack": [
-        0.0001
+        {
+          "type": "float",
+          "value": 0.0001
+        }
       ],
       "expected_packed": [
         "0x17",
@@ -807,7 +1101,10 @@
     {
       "format": "f",
       "to_pack": [
-        0.25
+        {
+          "type": "float",
+          "value": 0.25
+        }
       ],
       "expected_packed": [
         "0x00",
@@ -819,7 +1116,10 @@
     {
       "format": "f",
       "to_pack": [
-        150.0001
+        {
+          "type": "float",
+          "value": 150.0001
+        }
       ],
       "expected_packed": [
         "0x07",
@@ -831,7 +1131,10 @@
     {
       "format": "f",
       "to_pack": [
-        22
+        {
+          "type": "float",
+          "value": 22
+        }
       ],
       "expected_packed": [
         "0x00",
@@ -843,7 +1146,10 @@
     {
       "format": "f",
       "to_pack": [
-        -22
+        {
+          "type": "float",
+          "value": -22
+        }
       ],
       "expected_packed": [
         "0x00",
@@ -855,7 +1161,10 @@
     {
       "format": "f",
       "to_pack": [
-        -150.0001
+        {
+          "type": "float",
+          "value": -150.0001
+        }
       ],
       "expected_packed": [
         "0x07",
@@ -867,10 +1176,22 @@
     {
       "format": "C/C",
       "to_pack": [
-        9,
-        8,
-        7,
-        6
+        {
+          "type": "int",
+          "value": 9
+        },
+        {
+          "type": "int",
+          "value": 8
+        },
+        {
+          "type": "int",
+          "value": 7
+        },
+        {
+          "type": "int",
+          "value": 6
+        }
       ],
       "expected_packed": [
         "0x04",
@@ -883,10 +1204,22 @@
     {
       "format": "l/C",
       "to_pack": [
-        9,
-        8,
-        7,
-        6
+        {
+          "type": "int",
+          "value": 9
+        },
+        {
+          "type": "int",
+          "value": 8
+        },
+        {
+          "type": "int",
+          "value": 7
+        },
+        {
+          "type": "int",
+          "value": 6
+        }
       ],
       "expected_packed": [
         "0x04",
@@ -902,12 +1235,30 @@
     {
       "format": "ccl/C",
       "to_pack": [
-        -1,
-        1,
-        9,
-        8,
-        7,
-        6
+        {
+          "type": "int",
+          "value": -1
+        },
+        {
+          "type": "int",
+          "value": 1
+        },
+        {
+          "type": "int",
+          "value": 9
+        },
+        {
+          "type": "int",
+          "value": 8
+        },
+        {
+          "type": "int",
+          "value": 7
+        },
+        {
+          "type": "int",
+          "value": 6
+        }
       ],
       "expected_packed": [
         "0xff",
@@ -925,9 +1276,18 @@
     {
       "format": "f3",
       "to_pack": [
-        368.6478576660156,
-        14.986410140991211,
-        -39.827999114990234
+        {
+          "type": "float",
+          "value": 368.6478576660156
+        },
+        {
+          "type": "float",
+          "value": 14.986410140991211
+        },
+        {
+          "type": "float",
+          "value": -39.827999114990234
+        }
       ],
       "expected_packed": [
         "0xed",
@@ -942,6 +1302,196 @@
         "0x4f",
         "0x1f",
         "0xc2"
+      ]
+    },
+    {
+      "format": "H*",
+      "to_pack": [
+        {
+          "type": "bytes",
+          "value": "616263"
+        }
+      ],
+      "expected_packed": [
+        "0x61",
+        "0x62",
+        "0x63"
+      ]
+    },
+    {
+      "format": "h*",
+      "to_pack": [
+        {
+          "type": "bytes",
+          "value": "162636"
+        }
+      ],
+      "expected_packed": [
+        "0x61",
+        "0x62",
+        "0x63"
+      ]
+    },
+    {
+      "format": "H",
+      "to_pack": [
+        {
+          "type": "bytes",
+          "value": "61"
+        }
+      ],
+      "expected_packed": [
+        "0x60"
+      ]
+    },
+    {
+      "format": "H",
+      "to_pack": [
+        {
+          "type": "bytes",
+          "value": "16"
+        }
+      ],
+      "expected_packed": [
+        "0x10"
+      ]
+    },
+    {
+      "format": "H2",
+      "to_pack": [
+        {
+          "type": "bytes",
+          "value": "6162"
+        }
+      ],
+      "expected_packed": [
+        "0x61"
+      ]
+    },
+    {
+      "format": "H3",
+      "to_pack": [
+        {
+          "type": "bytes",
+          "value": "6162"
+        }
+      ],
+      "expected_packed": [
+        "0x61",
+        "0x60"
+      ]
+    },
+    {
+      "format": "H4",
+      "to_pack": [
+        {
+          "type": "bytes",
+          "value": "6162"
+        }
+      ],
+      "expected_packed": [
+        "0x61",
+        "0x62"
+      ]
+    },
+    {
+      "format": "H6",
+      "to_pack": [
+        {
+          "type": "bytes",
+          "value": "6162"
+        }
+      ],
+      "expected_packed": [
+        "0x61",
+        "0x62",
+        "0x00"
+      ]
+    },
+    {
+      "format": "HHH",
+      "to_pack": [
+        {
+          "type": "bytes",
+          "value": "61"
+        },
+        {
+          "type": "bytes",
+          "value": "62"
+        },
+        {
+          "type": "bytes",
+          "value": "63"
+        }
+      ],
+      "expected_packed": [
+        "0x60",
+        "0x60",
+        "0x60"
+      ]
+    },
+    {
+      "format": "h6",
+      "to_pack": [
+        {
+          "type": "bytes",
+          "value": "162636"
+        }
+      ],
+      "expected_packed": [
+        "0x61",
+        "0x62",
+        "0x63"
+      ]
+    },
+    {
+      "format": "h6",
+      "to_pack": [
+        {
+          "type": "bytes",
+          "value": "616263"
+        }
+      ],
+      "expected_packed": [
+        "0x16",
+        "0x26",
+        "0x36"
+      ]
+    },
+    {
+      "format": "h2",
+      "to_pack": [
+        {
+          "type": "bytes",
+          "value": "61"
+        }
+      ],
+      "expected_packed": [
+        "0x16"
+      ]
+    },
+    {
+      "format": "h",
+      "to_pack": [
+        {
+          "type": "bytes",
+          "value": "61"
+        }
+      ],
+      "expected_packed": [
+        "0x06"
+      ]
+    },
+    {
+      "format": "h",
+      "to_pack": [
+        {
+          "type": "bytes",
+          "value": "16"
+        }
+      ],
+      "expected_packed": [
+        "0x01"
       ]
     }
   ],
@@ -1270,6 +1820,62 @@
         "0x00",
         "0x61",
         "0x62"
+      ]
+    },
+    {
+      "format": "H*",
+      "expected_unpacked": [
+        {
+          "type": "bytes",
+          "value": "616263"
+        }
+      ],
+      "to_unpack": [
+        "0x61",
+        "0x62",
+        "0x63"
+      ]
+    },
+    {
+      "format": "H6",
+      "expected_unpacked": [
+        {
+          "type": "bytes",
+          "value": "616263"
+        }
+      ],
+      "to_unpack": [
+        "0x61",
+        "0x62",
+        "0x63"
+      ]
+    },
+    {
+      "format": "h*",
+      "expected_unpacked": [
+        {
+          "type": "bytes",
+          "value": "162636"
+        }
+      ],
+      "to_unpack": [
+        "0x61",
+        "0x62",
+        "0x63"
+      ]
+    },
+    {
+      "format": "h6",
+      "expected_unpacked": [
+        {
+          "type": "bytes",
+          "value": "162636"
+        }
+      ],
+      "to_unpack": [
+        "0x61",
+        "0x62",
+        "0x63"
       ]
     }
   ]

@@ -65,6 +65,18 @@ class PythonSupportedFormat(BaseBinaryFormat[T]):
         return struct.calcsize(self._get_format())
 
 
+# region binary
+
+class HexStringLowNybbleFirst(PythonSupportedFormat[bytes]):
+    # h
+    _python_format = "s"
+
+class HexStringHighNybbleFirst(PythonSupportedFormat[bytes]):
+    # H
+    _python_format = "s"
+
+# endregion binary
+
 
 # region strings
 class NullPaddedChar(PythonSupportedFormat[bytes]):

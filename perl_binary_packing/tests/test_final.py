@@ -6,21 +6,27 @@ from typing import TypedDict, Any
 from perl_binary_packing import pack, unpack
 
 
+class ValueWithFormat(TypedDict):
+    type: str
+    value: Any
+
+
 class TestPackData(TypedDict):
     format: str
-    to_pack: list[Any]
+    to_pack: list[ValueWithFormat]
     expected_packed: bytes
 
 
 class TestUnPackData(TypedDict):
     format: str
     to_unpack: bytes
-    expected_unpacked: list[Any]
+    expected_unpacked: list[ValueWithFormat]
+
 
 class TestFinal(unittest.TestCase):
     json_test_file = "test_data.json"
     _test_packing: list[TestPackData] = []
-    _test_packing: list[TestUnPackData] = []
+    _test_unpacking: list[TestUnPackData] = []
 
     @classmethod
     def _binary_hexes_to_bytes(cls, expected_packed_str: list[str]) -> bytes:
@@ -70,11 +76,7 @@ class TestFinal(unittest.TestCase):
         format = test_pack["format"]
         to_pack = test_pack["to_pack"]
         expected = test_pack["expected_packed"]
-        if ("a" in format) or ("A" in format) or ("Z" in format):
-            to_pack = [
-                item.encode() if isinstance(item, str) else item
-                for item in to_pack
-            ]
+        to_pack = [self._format_value(item) for item in to_pack]
         packed = pack(format, *to_pack)
         to_pack_view = self._format_array(to_pack)
         test_msg = f"Checking: pack({format}, {to_pack_view})/ Expected: \"{self._format_bytes(expected)}\", actual: \"{self._format_bytes(packed)}\""
@@ -89,7 +91,7 @@ class TestFinal(unittest.TestCase):
             with self.subTest(**test_unpack):
                 self._subtest_unpack(test_unpack)
 
-    def _format_expected(self, expected_object: dict) -> Any:
+    def _format_value(self, expected_object: ValueWithFormat) -> Any:
         _type = expected_object["type"]
         raw_value = expected_object["value"]
         possible_types = {
@@ -104,7 +106,7 @@ class TestFinal(unittest.TestCase):
         format = test_unpack["format"]
         to_unpack = test_unpack["to_unpack"]
         expected_objects = test_unpack["expected_unpacked"]
-        expected_values = [self._format_expected(expected_object) for expected_object in expected_objects]
+        expected_values = [self._format_value(expected_object) for expected_object in expected_objects]
         unpacked = list(unpack(format, to_unpack))
         # to_pack_view = "[" + ", ".join(map(lambda s: f'"{s}"', to_pack)) + "]"
         expected_view = self._format_array(expected_values)

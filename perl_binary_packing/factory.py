@@ -24,10 +24,14 @@ from perl_binary_packing.formats import (
     DynamicLenArray,
     FixedLenArray,
     UnlimitedLenArray, FixedLenNullPaddedStr, FixedLenSpacePaddedStr, AsciiNullPaddedStr, UnlimitedAsciiZString,
-    UnlimitedAsciiString,
+    UnlimitedAsciiString, HexStringLowNybbleFirst, HexStringHighNybbleFirst,
 )
 
 simple_formats = {
+    "h": HexStringLowNybbleFirst(),
+    "H": HexStringHighNybbleFirst(),
+
+
     "a": NullPaddedChar(),
     "A": SpacePaddedChar(),
     "Z": AsciiNullPaddedChar(),
