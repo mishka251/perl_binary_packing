@@ -1308,7 +1308,7 @@
       "format": "H*",
       "to_pack": [
         {
-          "type": "bytes",
+          "type": "str",
           "value": "616263"
         }
       ],
@@ -1322,7 +1322,7 @@
       "format": "h*",
       "to_pack": [
         {
-          "type": "bytes",
+          "type": "str",
           "value": "162636"
         }
       ],
@@ -1336,7 +1336,7 @@
       "format": "H",
       "to_pack": [
         {
-          "type": "bytes",
+          "type": "str",
           "value": "61"
         }
       ],
@@ -1348,7 +1348,7 @@
       "format": "H",
       "to_pack": [
         {
-          "type": "bytes",
+          "type": "str",
           "value": "16"
         }
       ],
@@ -1360,7 +1360,7 @@
       "format": "H2",
       "to_pack": [
         {
-          "type": "bytes",
+          "type": "str",
           "value": "6162"
         }
       ],
@@ -1372,7 +1372,7 @@
       "format": "H3",
       "to_pack": [
         {
-          "type": "bytes",
+          "type": "str",
           "value": "6162"
         }
       ],
@@ -1385,7 +1385,7 @@
       "format": "H4",
       "to_pack": [
         {
-          "type": "bytes",
+          "type": "str",
           "value": "6162"
         }
       ],
@@ -1398,7 +1398,7 @@
       "format": "H6",
       "to_pack": [
         {
-          "type": "bytes",
+          "type": "str",
           "value": "6162"
         }
       ],
@@ -1412,15 +1412,15 @@
       "format": "HHH",
       "to_pack": [
         {
-          "type": "bytes",
+          "type": "str",
           "value": "61"
         },
         {
-          "type": "bytes",
+          "type": "str",
           "value": "62"
         },
         {
-          "type": "bytes",
+          "type": "str",
           "value": "63"
         }
       ],
@@ -1434,7 +1434,7 @@
       "format": "h6",
       "to_pack": [
         {
-          "type": "bytes",
+          "type": "str",
           "value": "162636"
         }
       ],
@@ -1448,7 +1448,7 @@
       "format": "h6",
       "to_pack": [
         {
-          "type": "bytes",
+          "type": "str",
           "value": "616263"
         }
       ],
@@ -1462,7 +1462,7 @@
       "format": "h2",
       "to_pack": [
         {
-          "type": "bytes",
+          "type": "str",
           "value": "61"
         }
       ],
@@ -1474,7 +1474,7 @@
       "format": "h",
       "to_pack": [
         {
-          "type": "bytes",
+          "type": "str",
           "value": "61"
         }
       ],
@@ -1486,7 +1486,7 @@
       "format": "h",
       "to_pack": [
         {
-          "type": "bytes",
+          "type": "str",
           "value": "16"
         }
       ],
@@ -1826,7 +1826,7 @@
       "format": "H*",
       "expected_unpacked": [
         {
-          "type": "bytes",
+          "type": "str",
           "value": "616263"
         }
       ],
@@ -1840,7 +1840,7 @@
       "format": "H6",
       "expected_unpacked": [
         {
-          "type": "bytes",
+          "type": "str",
           "value": "616263"
         }
       ],
@@ -1854,7 +1854,7 @@
       "format": "h*",
       "expected_unpacked": [
         {
-          "type": "bytes",
+          "type": "str",
           "value": "162636"
         }
       ],
@@ -1868,7 +1868,7 @@
       "format": "h6",
       "expected_unpacked": [
         {
-          "type": "bytes",
+          "type": "str",
           "value": "162636"
         }
       ],
@@ -1876,6 +1876,48 @@
         "0x61",
         "0x62",
         "0x63"
+      ]
+    },
+        {
+      "format": "h6",
+      "expected_unpacked": [
+        {
+          "type": "str",
+          "value": "1626ff"
+        }
+      ],
+      "to_unpack": [
+        "0x61",
+        "0x62",
+        "0xff"
+      ]
+    },
+            {
+      "format": "h5",
+      "expected_unpacked": [
+        {
+          "type": "str",
+          "value": "1626f"
+        }
+      ],
+      "to_unpack": [
+        "0x61",
+        "0x62",
+        "0xff"
+      ]
+    },
+            {
+      "format": "h3",
+      "expected_unpacked": [
+        {
+          "type": "str",
+          "value": "162"
+        }
+      ],
+      "to_unpack": [
+        "0x61",
+        "0x62",
+        "0xff"
       ]
     }
   ]

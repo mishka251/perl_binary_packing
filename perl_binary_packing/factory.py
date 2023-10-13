@@ -24,7 +24,8 @@ from perl_binary_packing.formats import (
     DynamicLenArray,
     FixedLenArray,
     UnlimitedLenArray, FixedLenNullPaddedStr, FixedLenSpacePaddedStr, AsciiNullPaddedStr, UnlimitedAsciiZString,
-    UnlimitedAsciiString, HexStringLowNybbleFirst, HexStringHighNybbleFirst,
+    UnlimitedAsciiString, HexStringLowNybbleFirst, HexStringHighNybbleFirst, FirstLowNibbleUnlimitedArray,
+    FirstHighNibbleUnlimitedArray, FirstLowNibbleCountedArray, FirstHighNibbleCounteddArray,
 )
 
 simple_formats = {
@@ -129,6 +130,12 @@ def parse_format(format_str: str) -> list[BaseBinaryFormat]:
             elif item_format_str == "Z":
                 current_format = AsciiNullPaddedStr(count)
                 formats.append(current_format)
+            elif item_format_str == "h":
+                current_format = FirstLowNibbleCountedArray(count)
+                formats.append(current_format)
+            elif item_format_str == "H":
+                current_format = FirstHighNibbleCounteddArray(count)
+                formats.append(current_format)
             else:
                 item_format = _parse_format_simple(item_format_str)
                 # current_format = FixedLenArray(item_format, count)
@@ -141,6 +148,10 @@ def parse_format(format_str: str) -> list[BaseBinaryFormat]:
             binary_string_formats = {"a", "A"}
             if item_format_str == "Z":
                 current_format = UnlimitedAsciiZString()
+            elif item_format_str == "h":
+                current_format = FirstLowNibbleUnlimitedArray()
+            elif item_format_str == "H":
+                current_format = FirstHighNibbleUnlimitedArray()
             elif item_format_str in binary_string_formats:
                 item_format = UnSignedChar()
                 current_format = UnlimitedAsciiString(item_format)

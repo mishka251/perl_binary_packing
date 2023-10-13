@@ -22,6 +22,26 @@ class PackResult:
     packed_items_count: int
 
 
+class ByteNybbles:
+    _byte: int
+    _low_nybble: int
+    _high_nybble: int
+
+    def __init__(self, byte: int):
+        self._byte = byte
+        low_nybble = byte & 0x0F
+        high_nybble = (byte & 0xF0) >> 4
+        self._low_nybble = low_nybble
+        self._high_nybble = high_nybble
+
+    @property
+    def high_nybble(self) -> str:
+        return f"{self._high_nybble:x}"
+
+    @property
+    def low_nybble(self) -> str:
+        return f"{self._low_nybble:x}"
+
 class BaseBinaryFormat(Generic[T]):
     def pack(self, values: tuple[T]) -> PackResult:
         value = values[0] if values else None
@@ -67,13 +87,24 @@ class PythonSupportedFormat(BaseBinaryFormat[T]):
 
 # region binary
 
-class HexStringLowNybbleFirst(PythonSupportedFormat[bytes]):
+class HexStringLowNybbleFirst(PythonSupportedFormat[str]):
     # h
     _python_format = "s"
+
+    def _pack(self, value: str) -> bytes:
+        low_nybble = int(value[0], base=16)
+        byte = low_nybble
+        return bytes([byte])
+
 
 class HexStringHighNybbleFirst(PythonSupportedFormat[bytes]):
     # H
     _python_format = "s"
+
+    def _pack(self, value: str) -> bytes:
+        high_nybble = int(value[0], base=16)
+        byte = high_nybble << 4
+        return bytes([byte])
 
 # endregion binary
 
@@ -393,3 +424,139 @@ class UnlimitedAsciiZString(UnlimitedLenArray[bytes]):
             total_bytes += bytes_len
             items_data = items_data[bytes_len:]
         return UnpackResult((bytes(result).decode("cp1251"),), total_bytes)
+
+
+class FirstLowNibbleUnlimitedArray(UnlimitedLenArray[str]):
+    # h*
+
+    def __init__(self):
+        pass
+    def _pack(self, value: str) -> bytes:
+        result = []
+        for i, nybble_str in enumerate(value):
+            nybble_num= int(nybble_str)
+            is_high = i %2==1
+            if is_high:
+                nybble_num <<= 4
+            if i%2==0:
+                result.append(nybble_num)
+            else:
+                result[-1]+=nybble_num
+        return bytes(result)
+
+    def _pack_none(self) -> bytes:
+        return b'\0'
+
+    def unpack(self, data: bytes) -> UnpackResult[list[T]]:
+        result = ""
+        for byte in data:
+            nybbles = ByteNybbles(byte)
+            current = f"{nybbles.low_nybble}{nybbles.high_nybble}"
+            result += current
+        return UnpackResult((result,), len(data))
+
+class FirstHighNibbleUnlimitedArray(UnlimitedLenArray[str]):
+    # H*
+
+    def __init__(self):
+        pass
+
+
+    def _pack(self, value: str) -> bytes:
+        result = []
+        for i, nybble_str in enumerate(value):
+            nybble_num = int(nybble_str)
+            is_high = i % 2 == 0
+            if is_high:
+                nybble_num <<= 4
+            if i % 2 == 0:
+                result.append(nybble_num)
+            else:
+                result[-1] += nybble_num
+        return bytes(result)
+
+    def _pack_none(self) -> bytes:
+        return b'\0'
+
+    def unpack(self, data: bytes) -> UnpackResult[list[T]]:
+        result = ""
+        for byte in data:
+            nybbles = ByteNybbles(byte)
+            current = f"{nybbles.high_nybble}{nybbles.low_nybble}"
+            result += current
+        return UnpackResult((result,), len(data))
+
+class FirstLowNibbleCountedArray(UnlimitedLenArray[str]):
+    # h5
+
+    def __init__(self, count: int):
+        self._count = count
+
+    def _pack(self, value: str) -> bytes:
+        result = []
+        for i, nybble_str in enumerate(value):
+            if i >= self._count:
+                break
+            nybble_num = int(nybble_str)
+            is_high = i % 2 == 1
+            if is_high:
+                nybble_num <<= 4
+            if i % 2 == 0:
+                result.append(nybble_num)
+            else:
+                result[-1] += nybble_num
+        return bytes(result)
+
+    def _pack_none(self) -> bytes:
+        return b'\0'
+
+    def unpack(self, data: bytes) -> UnpackResult[list[T]]:
+        result = ""
+        for nybble_index in range(self._count):
+            byte_index = nybble_index // 2
+            if byte_index >= len(data):
+                break
+            byte = data[byte_index]
+            nybbles = ByteNybbles(byte)
+            current = f"{nybbles.low_nybble}" if nybble_index % 2 == 0 else f"{nybbles.high_nybble}"
+            result += current
+        return UnpackResult((result,), len(data))
+
+class FirstHighNibbleCounteddArray(UnlimitedLenArray[str]):
+    # H5
+
+    def __init__(self, count: int):
+        self._count = count
+
+    def _pack(self, value: str) -> bytes:
+        result = []
+        for i, nybble_str in enumerate(value):
+            if i >= self._count:
+                break
+            nybble_num= int(nybble_str)
+            is_high = i %2==0
+            if is_high:
+                nybble_num <<= 4
+            if i%2==0:
+                result.append(nybble_num)
+            else:
+                result[-1]+=nybble_num
+        res = bytes(result)
+        if len(value)< self._count:
+            res+=b'\0'
+        return res
+
+    def _pack_none(self) -> bytes:
+        return b'\0'
+
+    def unpack(self, data: bytes) -> UnpackResult[list[T]]:
+        result = ""
+        for nybble_index in range(self._count):
+            byte_index = nybble_index // 2
+            if byte_index >= len(data):
+                break
+            byte = data[byte_index]
+            nybbles = ByteNybbles(byte)
+            current = f"{nybbles.high_nybble}" if nybble_index % 2 == 0 else  f"{nybbles.low_nybble}"
+            result += current
+        return UnpackResult((result,), len(data))
