@@ -25,7 +25,7 @@ from perl_binary_packing.formats import (
     FixedLenArray,
     UnlimitedLenArray, FixedLenNullPaddedStr, FixedLenSpacePaddedStr, AsciiNullPaddedStr, UnlimitedAsciiZString,
     UnlimitedAsciiString, HexStringLowNybbleFirst, HexStringHighNybbleFirst, FirstLowNibbleUnlimitedArray,
-    FirstHighNibbleUnlimitedArray, FirstLowNibbleCountedArray, FirstHighNibbleCounteddArray,
+    FirstHighNibbleUnlimitedArray, FirstLowNibbleCountedArray, FirstHighNibbleCounteddArray, GroupFormat,
 )
 
 simple_formats = {
@@ -102,13 +102,23 @@ def _parse_format_simple(format_str: str) -> BaseBinaryFormat:
 
 def parse_format(format_str: str) -> list[BaseBinaryFormat]:
     with_dynamic_count_format_re = r"^(?P<count_format>.)/(?P<item_format>.)"
+    with_dynamic_count_group_format_re = r"^(?P<count_format>.)/\((?P<item_format>.*)\)"
     with_static_count_format_re = r"^(?P<item_format>.)\[?(?P<count>\d+)\]?"
     with_unknown_count_format_re = r"^(?P<item_format>.)\*"
 
     format_str_tmp = format_str
     formats = []
     while format_str_tmp:
-        if match := re.match(with_dynamic_count_format_re, format_str_tmp):
+        if match := re.match(with_dynamic_count_group_format_re, format_str_tmp):
+            count_format_str = match.group("count_format")
+            item_format_str = match.group("item_format")
+            cont_format = _parse_format_simple(count_format_str)
+            item_format = parse_format(item_format_str)[0]
+            current_format = DynamicLenArray(item_format, cont_format)
+            formats.append(current_format)
+            format_len = match.regs[0][1]-match.regs[0][0]
+            format_str_tmp = format_str_tmp[format_len:]
+        elif match := re.match(with_dynamic_count_format_re, format_str_tmp):
             count_format_str = match.group("count_format")
             item_format_str = match.group("item_format")
             cont_format = _parse_format_simple(count_format_str)
@@ -166,5 +176,6 @@ def parse_format(format_str: str) -> list[BaseBinaryFormat]:
             current_format = _parse_format_simple(_format_str)
             formats.append(current_format)
             format_str_tmp = format_str_tmp[1:]
-
-    return formats
+    group = GroupFormat(tuple(formats))
+    return [group]
+    # return formats

@@ -1919,6 +1919,97 @@
         "0x62",
         "0xff"
       ]
+    },
+    {
+      "format": "C/(Z*)a*",
+      "expected_unpacked": [
+        {
+          "type": "bytes",
+          "value": "0x00b0x00a"
+        }
+      ],
+      "to_unpack": [
+        "0x00",
+        "0x00",
+        "0x62",
+        "0x00",
+        "0x61"
+      ]
+    },
+    {
+      "format": "C/(C)a*",
+      "expected_unpacked": [
+        {
+          "type": "int",
+          "value": "8"
+        },
+        {
+          "type": "int",
+          "value": "7"
+        },
+        {
+          "type": "int",
+          "value": "6"
+        },
+        {
+          "type": "int",
+          "value": "5"
+        },
+        {
+          "type": "int",
+          "value": "4"
+        },
+        {
+          "type": "bytes",
+          "value": ""
+        }
+      ],
+      "to_unpack": [
+        "0x05",
+        "0x08",
+        "0x07",
+        "0x06",
+        "0x05",
+        "0x04"
+      ]
+    },
+    {
+      "format": "C/(C)a*",
+      "expected_unpacked": [
+        {
+          "type": "int",
+          "value": "8"
+        },
+        {
+          "type": "int",
+          "value": "7"
+        },
+        {
+          "type": "int",
+          "value": "6"
+        },
+        {
+          "type": "int",
+          "value": "5"
+        },
+        {
+          "type": "int",
+          "value": "4"
+        },
+        {
+          "type": "bytes",
+          "value": "b"
+        }
+      ],
+      "to_unpack": [
+        "0x05",
+        "0x08",
+        "0x07",
+        "0x06",
+        "0x05",
+        "0x04",
+        "0x62"
+      ]
     }
   ]
 }

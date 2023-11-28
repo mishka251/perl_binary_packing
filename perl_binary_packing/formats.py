@@ -560,3 +560,60 @@ class FirstHighNibbleCounteddArray(UnlimitedLenArray[str]):
             current = f"{nybbles.high_nybble}" if nybble_index % 2 == 0 else  f"{nybbles.low_nybble}"
             result += current
         return UnpackResult((result,), len(data))
+
+
+class GroupFormat(BaseBinaryFormat):
+    _child_formats: tuple[BaseBinaryFormat, ...]
+
+    def __init__(self, child_formats: tuple[BaseBinaryFormat, ...]):
+        super().__init__()
+        self._child_formats = child_formats
+
+
+    def pack(self, values: tuple[T]) -> PackResult:
+        current_args = values
+        total_packed = b''
+        total_packed_items = 0
+        for i, _format in enumerate(self._child_formats):
+            # arg = args[i] if i < len(args) else None
+            try:
+                current_pack_result = _format.pack(current_args)
+            except Exception as ex:
+                raise ValueError(f"Error pack {_format=} {current_args=}") from ex
+            total_packed += current_pack_result.packed
+            total_packed_items += current_pack_result.packed_items_count
+            current_args = current_args[current_pack_result.packed_items_count:] if current_pack_result.packed_items_count < len(
+                current_args) else tuple()
+        return PackResult(total_packed, total_packed_items)
+
+    def unpack(self, data: bytes) -> UnpackResult[list[T]]:
+        result = []
+        _data = data
+        total_unpacked_bytes = 0
+        for i, _format in enumerate(self._child_formats):
+            needed_len = None
+            try:
+                needed_len = _format.get_bytes_length()
+            except NotImplementedError:
+                pass
+            if needed_len:
+                data_part = _data[0:needed_len]
+            else:
+                data_part = _data
+            try:
+                unpack_result = _format.unpack(data_part)
+            except Exception as ex:
+                raise ValueError(f"Unpack error {_format=}, {data_part=}") from ex
+            result.extend(unpack_result.data)
+            if unpack_result.unpacked_bytes_length < len(data):
+                _data = _data[unpack_result.unpacked_bytes_length:]
+            else:
+                _data = b""
+            total_unpacked_bytes += unpack_result.unpacked_bytes_length
+        return UnpackResult(tuple(result), total_unpacked_bytes)
+
+    def __str__(self):
+        return f"GroupFormat({self._child_formats})"
+
+    def __repr__(self):
+        return f"GroupFormat({self._child_formats})"

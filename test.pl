@@ -39,8 +39,8 @@ sub parse_json_values {
         my $expected_value = $raw_expected_value;
         if ($expected_object->{type} eq "bytes") {
             my $find = "0x00";
-            my $replace = "";
-            $expected_value =~ s/$find/$replace/;
+            my $replace = "\0";
+            $expected_value =~ s/$find/$replace/g;
         }
         push @expected_unpacked, $expected_value;
     }
