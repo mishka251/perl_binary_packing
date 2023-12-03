@@ -2010,6 +2010,41 @@
         "0x04",
         "0x62"
       ]
+    },
+            {
+      "format": "V(Z*)1",
+      "expected_unpacked": [
+                {
+          "type": "int",
+          "value": "5"
+        },
+        {
+          "type": "str",
+          "value": ""
+        }
+      ],
+      "to_unpack": [
+        "0x05",
+        "0x00",
+        "0x00",
+        "0x00",
+        "0x00"
+      ]
+    },
+               {
+      "format": "V(Z*)0",
+      "expected_unpacked": [
+                {
+          "type": "int",
+          "value": "5"
+        }
+      ],
+      "to_unpack": [
+        "0x05",
+        "0x00",
+        "0x00",
+        "0x00"
+      ]
     }
   ]
 }

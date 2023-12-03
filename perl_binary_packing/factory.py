@@ -104,6 +104,7 @@ def parse_format(format_str: str) -> list[BaseBinaryFormat]:
     with_dynamic_count_format_re = r"^(?P<count_format>.)/(?P<item_format>.)"
     with_dynamic_count_group_format_re = r"^(?P<count_format>.)/\((?P<item_format>.*)\)"
     with_static_count_format_re = r"^(?P<item_format>.)\[?(?P<count>\d+)\]?"
+    group_with_static_count_format_re = r"^\((?P<item_format>.*)\)\[?(?P<count>\d+)\]?"
     with_unknown_count_format_re = r"^(?P<item_format>.)\*"
 
     format_str_tmp = format_str
@@ -148,6 +149,32 @@ def parse_format(format_str: str) -> list[BaseBinaryFormat]:
                 formats.append(current_format)
             else:
                 item_format = _parse_format_simple(item_format_str)
+                # current_format = FixedLenArray(item_format, count)
+                current_formats = [item_format]*count
+                formats.extend(current_formats)
+            format_len = match.regs[0][1]-match.regs[0][0]
+            format_str_tmp = format_str_tmp[format_len:]
+        elif match := re.match(group_with_static_count_format_re, format_str_tmp):
+            count_str = match.group("count")
+            count = int(count_str)
+            item_format_str = match.group("item_format")
+            if item_format_str == "a":
+                current_format = FixedLenNullPaddedStr(count)
+                formats.append(current_format)
+            elif item_format_str == "A":
+                current_format = FixedLenSpacePaddedStr(count)
+                formats.append(current_format)
+            elif item_format_str == "Z":
+                current_format = AsciiNullPaddedStr(count)
+                formats.append(current_format)
+            elif item_format_str == "h":
+                current_format = FirstLowNibbleCountedArray(count)
+                formats.append(current_format)
+            elif item_format_str == "H":
+                current_format = FirstHighNibbleCounteddArray(count)
+                formats.append(current_format)
+            else:
+                item_format = parse_format(item_format_str)[0]
                 # current_format = FixedLenArray(item_format, count)
                 current_formats = [item_format]*count
                 formats.extend(current_formats)
