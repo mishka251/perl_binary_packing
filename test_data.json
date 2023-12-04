@@ -1878,7 +1878,7 @@
         "0x63"
       ]
     },
-        {
+    {
       "format": "h6",
       "expected_unpacked": [
         {
@@ -1892,7 +1892,7 @@
         "0xff"
       ]
     },
-            {
+    {
       "format": "h5",
       "expected_unpacked": [
         {
@@ -1906,7 +1906,7 @@
         "0xff"
       ]
     },
-            {
+    {
       "format": "h3",
       "expected_unpacked": [
         {
@@ -2011,10 +2011,10 @@
         "0x62"
       ]
     },
-            {
+    {
       "format": "V(Z*)1",
       "expected_unpacked": [
-                {
+        {
           "type": "int",
           "value": "5"
         },
@@ -2031,10 +2031,10 @@
         "0x00"
       ]
     },
-               {
+    {
       "format": "V(Z*)0",
       "expected_unpacked": [
-                {
+        {
           "type": "int",
           "value": "5"
         }
@@ -2044,6 +2044,38 @@
         "0x00",
         "0x00",
         "0x00"
+      ]
+    },
+    {
+      "format": "C/(Z*C)",
+      "expected_unpacked": [
+        {
+          "type": "str",
+          "value": "ab"
+        },
+        {
+          "type": "int",
+          "value": "9"
+        },
+        {
+          "type": "str",
+          "value": "cd"
+        },
+        {
+          "type": "int",
+          "value": "10"
+        }
+      ],
+      "to_unpack": [
+        "0x02",
+        "0x61",
+        "0x62",
+        "0x00",
+        "0x09",
+        "0x63",
+        "0x64",
+        "0x00",
+        "0x0a"
       ]
     }
   ]

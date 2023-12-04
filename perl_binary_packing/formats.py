@@ -297,9 +297,9 @@ class DynamicLenArray(BaseBinaryFormat[list[T]], Generic[T]):
             else:
                 data_part = items_data
             unpacked = self._item_format.unpack(data_part)
-            unpacked_item = unpacked.data[0]
+            # unpacked_item = [0]
             bytes_len = unpacked.unpacked_bytes_length
-            result.append(unpacked_item)
+            result.extend(unpacked.data)
             total_bytes += bytes_len
             items_data = items_data[bytes_len:]
         return UnpackResult(result, total_bytes)
