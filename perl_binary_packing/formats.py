@@ -465,7 +465,7 @@ class FirstHighNibbleUnlimitedArray(UnlimitedLenArray[str]):
     def _pack(self, value: str) -> bytes:
         result = []
         for i, nybble_str in enumerate(value):
-            nybble_num = int(nybble_str)
+            nybble_num = int(nybble_str, base=16)
             is_high = i % 2 == 0
             if is_high:
                 nybble_num <<= 4
