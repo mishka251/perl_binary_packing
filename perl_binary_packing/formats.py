@@ -42,6 +42,7 @@ class ByteNybbles:
     def low_nybble(self) -> str:
         return f"{self._low_nybble:x}"
 
+
 class BaseBinaryFormat(Generic[T]):
     def pack(self, values: tuple[T]) -> PackResult:
         value = values[0] if values else None
@@ -140,52 +141,52 @@ class AsciiNullPaddedChar(PythonSupportedFormat[bytes]):
 # region integers
 class SignedChar(PythonSupportedFormat[int]):
     # c
-    _python_format = "b"
+    _python_format = "=b"
 
 
 class UnSignedChar(PythonSupportedFormat[int]):
     # C
-    _python_format = "B"
+    _python_format = "=B"
 
 
 class SignedShort(PythonSupportedFormat[int]):
     # s
-    _python_format = "h"
+    _python_format = "=h"
 
 
 class UnSignedShort(PythonSupportedFormat[int]):
     # S
-    _python_format = "H"
+    _python_format = "=H"
 
 
 class SignedLong(PythonSupportedFormat[int]):
     # l
-    _python_format = "l"
+    _python_format = "=l"
 
 
 class UnSignedLong(PythonSupportedFormat[int]):
     # L
-    _python_format = "L"
+    _python_format = "=L"
 
 
 class SignedLongLong(PythonSupportedFormat[int]):
     # q
-    _python_format = "q"
+    _python_format = "=q"
 
 
 class UnSignedLongLong(PythonSupportedFormat[int]):
     # Q
-    _python_format = "Q"
+    _python_format = "=Q"
 
 
 class SignedInteger(PythonSupportedFormat[int]):
     # i
-    _python_format = "i"
+    _python_format = "=i"
 
 
 class UnSignedInteger(PythonSupportedFormat[int]):
     # I
-    _python_format = "I"
+    _python_format = "=I"
 
 
 class NetWorkUnSignedShort(PythonSupportedFormat[int]):
