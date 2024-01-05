@@ -1,31 +1,40 @@
 import re
 
 from perl_binary_packing.formats import (
-    BaseBinaryFormat,
-    NullPaddedChar,
-    SpacePaddedChar,
     AsciiNullPaddedChar,
-    SignedChar,
-    UnSignedChar,
-    SignedShort,
-    UnSignedShort,
-    SignedLong,
-    UnSignedLong,
-    SignedLongLong,
-    UnSignedLongLong,
-    SignedInteger,
-    UnSignedInteger,
-    NetWorkUnSignedShort,
-    NetWorkUnSignedLong,
-    VAXUnSignedLong,
-    VAXUnSignedShort,
-    Float,
+    AsciiNullPaddedStr,
+    BaseBinaryFormat,
     Double,
     DynamicLenArray,
-    FixedLenArray,
-    UnlimitedLenArray, FixedLenNullPaddedStr, FixedLenSpacePaddedStr, AsciiNullPaddedStr, UnlimitedAsciiZString,
-    UnlimitedAsciiString, HexStringLowNybbleFirst, HexStringHighNybbleFirst, FirstLowNibbleUnlimitedArray,
-    FirstHighNibbleUnlimitedArray, FirstLowNibbleCountedArray, FirstHighNibbleCounteddArray, GroupFormat,
+    FirstHighNibbleCounteddArray,
+    FirstHighNibbleUnlimitedArray,
+    FirstLowNibbleCountedArray,
+    FirstLowNibbleUnlimitedArray,
+    FixedLenNullPaddedStr,
+    FixedLenSpacePaddedStr,
+    Float,
+    GroupFormat,
+    HexStringHighNybbleFirst,
+    HexStringLowNybbleFirst,
+    NetWorkUnSignedLong,
+    NetWorkUnSignedShort,
+    NullPaddedChar,
+    SignedChar,
+    SignedInteger,
+    SignedLong,
+    SignedLongLong,
+    SignedShort,
+    SpacePaddedChar,
+    UnlimitedAsciiString,
+    UnlimitedAsciiZString,
+    UnlimitedLenArray,
+    UnSignedChar,
+    UnSignedInteger,
+    UnSignedLong,
+    UnSignedLongLong,
+    UnSignedShort,
+    VAXUnSignedLong,
+    VAXUnSignedShort,
 )
 
 simple_formats = {
@@ -64,7 +73,7 @@ simple_formats = {
 
 
 def get_repeat_count_str(format_str: str) -> str:
-    if rm := re.match("^\d+", format_str):
+    if rm := re.match(r"^\d+", format_str):
         return format_str[rm.regs[0][0]: rm.regs[0][1]]
     return ""
 
@@ -73,17 +82,17 @@ def get_next_format(format_str: str) -> str:
     with_count_format_re = r"^./."
     if re.match(with_count_format_re, format_str):
         return format_str[:3]
-    if format_str[0] == 'V' or format_str[0] == 'v':
+    if format_str[0] == "V" or format_str[0] == "v":
         count = get_repeat_count_str(format_str[1:])
         return format_str[0] + count
-    if format_str.startswith('Z*'):
-        return 'Z*'
-    if format_str.startswith('a*'):
-        return 'a*'
-    if format_str.startswith('a['):
-        end_index = format_str.find(']')
+    if format_str.startswith("Z*"):
+        return "Z*"
+    if format_str.startswith("a*"):
+        return "a*"
+    if format_str.startswith("a["):
+        end_index = format_str.find("]")
         return format_str[0:end_index + 1]
-    if format_str[0] == 'C':
+    if format_str[0] == "C":
         count = get_repeat_count_str(format_str[1:])
         return format_str[0] + count
     if format_str.startswith("f"):
@@ -93,7 +102,7 @@ def get_next_format(format_str: str) -> str:
         count = get_repeat_count_str(format_str[1:])
         return format_str[0] + count
 
-    raise NotImplementedError(f'format={format_str}')
+    raise NotImplementedError(f"format={format_str}")
 
 
 def _parse_format_simple(format_str: str) -> BaseBinaryFormat:
@@ -117,7 +126,7 @@ def parse_format(format_str: str) -> list[BaseBinaryFormat]:
             item_format = parse_format(item_format_str)[0]
             current_format = DynamicLenArray(item_format, cont_format)
             formats.append(current_format)
-            format_len = match.regs[0][1]-match.regs[0][0]
+            format_len = match.regs[0][1] - match.regs[0][0]
             format_str_tmp = format_str_tmp[format_len:]
         elif match := re.match(with_dynamic_count_format_re, format_str_tmp):
             count_format_str = match.group("count_format")
@@ -126,7 +135,7 @@ def parse_format(format_str: str) -> list[BaseBinaryFormat]:
             item_format = _parse_format_simple(item_format_str)
             current_format = DynamicLenArray(item_format, cont_format)
             formats.append(current_format)
-            format_len = match.regs[0][1]-match.regs[0][0]
+            format_len = match.regs[0][1] - match.regs[0][0]
             format_str_tmp = format_str_tmp[format_len:]
         elif match := re.match(with_static_count_format_re, format_str_tmp):
             count_str = match.group("count")
@@ -150,9 +159,9 @@ def parse_format(format_str: str) -> list[BaseBinaryFormat]:
             else:
                 item_format = _parse_format_simple(item_format_str)
                 # current_format = FixedLenArray(item_format, count)
-                current_formats = [item_format]*count
+                current_formats = [item_format] * count
                 formats.extend(current_formats)
-            format_len = match.regs[0][1]-match.regs[0][0]
+            format_len = match.regs[0][1] - match.regs[0][0]
             format_str_tmp = format_str_tmp[format_len:]
         elif match := re.match(group_with_static_count_format_re, format_str_tmp):
             count_str = match.group("count")
@@ -176,9 +185,9 @@ def parse_format(format_str: str) -> list[BaseBinaryFormat]:
             else:
                 item_format = parse_format(item_format_str)[0]
                 # current_format = FixedLenArray(item_format, count)
-                current_formats = [item_format]*count
+                current_formats = [item_format] * count
                 formats.extend(current_formats)
-            format_len = match.regs[0][1]-match.regs[0][0]
+            format_len = match.regs[0][1] - match.regs[0][0]
             format_str_tmp = format_str_tmp[format_len:]
         elif match := re.match(with_unknown_count_format_re, format_str_tmp):
             item_format_str = match.group("item_format")

@@ -1,6 +1,5 @@
-import unittest
 
-from perl_binary_packing.formats import NullPaddedChar, SpacePaddedChar, AsciiNullPaddedChar
+from perl_binary_packing.formats import AsciiNullPaddedChar, NullPaddedChar, SpacePaddedChar
 from perl_binary_packing.tests.base import BaseTestBinaryFormat, SubTestCase
 
 

@@ -2,7 +2,7 @@ import dataclasses
 import unittest
 from typing import Generic
 
-from perl_binary_packing.formats import T, BaseBinaryFormat
+from perl_binary_packing.formats import BaseBinaryFormat, T
 
 
 @dataclasses.dataclass

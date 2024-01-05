@@ -2,6 +2,7 @@ from typing import Any
 
 from perl_binary_packing.factory import parse_format
 
+
 def pack(format_str: str, *args) -> bytes:
     try:
         return _pack(format_str, *args)
@@ -13,7 +14,7 @@ def _pack(format_str: str, *args) -> bytes:
     # if len(args) == 1 and isinstance(args[0], (list, tuple)):
     #     args = args[0]
     formats = parse_format(format_str)
-    packed = b''
+    packed = b""
     full_args = args
     current_args = args
     for i, _format in enumerate(formats):

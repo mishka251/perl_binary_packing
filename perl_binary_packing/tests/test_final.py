@@ -1,7 +1,7 @@
 import json
 import struct
 import unittest
-from typing import TypedDict, Any
+from typing import Any, TypedDict
 
 from perl_binary_packing import pack, unpack
 
@@ -30,7 +30,7 @@ class TestFinal(unittest.TestCase):
 
     @classmethod
     def _binary_hexes_to_bytes(cls, expected_packed_str: list[str]) -> bytes:
-        return b''.join([struct.pack('B', int(byte, 16)) for byte in expected_packed_str])
+        return b"".join([struct.pack("B", int(byte, 16)) for byte in expected_packed_str])
 
     @classmethod
     def setUpClass(cls) -> None:
@@ -79,7 +79,7 @@ class TestFinal(unittest.TestCase):
         to_pack = [self._format_value(item) for item in to_pack]
         packed = pack(format, *to_pack)
         to_pack_view = self._format_array(to_pack)
-        test_msg = f"Checking: pack({format}, {to_pack_view})/ Expected: \"{self._format_bytes(expected)}\", actual: \"{self._format_bytes(packed)}\""
+        test_msg = f'Checking: pack({format}, {to_pack_view})/ Expected: "{self._format_bytes(expected)}", actual: "{self._format_bytes(packed)}"'
         self.assertEqual(
             expected,
             packed,
@@ -111,7 +111,7 @@ class TestFinal(unittest.TestCase):
         # to_pack_view = "[" + ", ".join(map(lambda s: f'"{s}"', to_pack)) + "]"
         expected_view = self._format_array(expected_values)
         unpacked_view = self._format_array(unpacked)
-        test_msg = f"Checking: pack({format}, {self._format_bytes(to_unpack)})/ Expected: \"{expected_view}\", actual: \"{unpacked_view}\""
+        test_msg = f'Checking: pack({format}, {self._format_bytes(to_unpack)})/ Expected: "{expected_view}", actual: "{unpacked_view}"'
         self.assertListEqual(
             expected_values,
             unpacked,
