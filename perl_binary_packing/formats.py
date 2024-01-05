@@ -1,6 +1,6 @@
 import dataclasses
 import struct
-from typing import Generic, TypeVar
+from typing import Generic, Optional, TypeVar
 
 T = TypeVar("T")
 
@@ -51,7 +51,7 @@ class BaseBinaryFormat(Generic[T]):
         packed = self._pack(value)
         return PackResult(packed, 1)
 
-    def _value_is_empty(self,  value: Optional[T]) -> bool:
+    def _value_is_empty(self, value: Optional[T]) -> bool:
         return value is None
 
     def _pack(self, value: T) -> bytes:
@@ -122,7 +122,7 @@ class SpacePaddedChar(PythonSupportedFormat[bytes]):
     def _pack_none(self) -> bytes:
         return b" "
 
-    def _value_is_empty(self,  value: Optional[T]) -> bool:
+    def _value_is_empty(self, value: Optional[T]) -> bool:
         return value is None or value == b""
 
 
@@ -146,12 +146,6 @@ class SignedChar(PythonSupportedFormat[int]):
 class UnSignedChar(PythonSupportedFormat[int]):
     # C
     _python_format = "B"
-
-
-class WideSignedChar(PythonSupportedFormat[int]):
-    # w
-    # _python_format = "b"
-    pass
 
 
 class SignedShort(PythonSupportedFormat[int]):
@@ -235,14 +229,13 @@ class Double(PythonSupportedFormat[float]):
 
 
 class FixedLenArray(BaseBinaryFormat[list[T]], Generic[T]):
-    # FORMAT[COUNT]
+    # вида FORMAT[COUNT]
     def __init__(self, inner_format: BaseBinaryFormat[T], count: int):
         self._count = count
         self._item_format = inner_format
 
     def _pack(self, value: list[T]) -> bytes:
         packed = b""
-        # assert len(value) == self._count
         for item in value:
             packed += self._item_format._pack(item)
         return packed
@@ -288,17 +281,13 @@ class DynamicLenArray(BaseBinaryFormat[list[T]], Generic[T]):
         items_data = data[count_unpack_result.unpacked_bytes_length:]
         total_bytes += count_unpack_result.unpacked_bytes_length
         for _ in range(count):
-            needed_len = None
             try:
                 needed_len = self._item_format.get_bytes_length()
             except NotImplementedError:
-                pass
-            if needed_len:
-                data_part = items_data[0:needed_len]
-            else:
-                data_part = items_data
+                needed_len = None
+
+            data_part = items_data[0:needed_len] if needed_len else items_data
             unpacked = self._item_format.unpack(data_part)
-            # unpacked_item = [0]
             bytes_len = unpacked.unpacked_bytes_length
             result.extend(unpacked.data)
             total_bytes += bytes_len
@@ -306,7 +295,8 @@ class DynamicLenArray(BaseBinaryFormat[list[T]], Generic[T]):
         return UnpackResult(result, total_bytes)
 
     def get_bytes_length(self) -> int:
-        raise NotImplementedError("Нельзя определить не распаковав данные")
+        msg = "Нельзя определить не распаковав данные"
+        raise NotImplementedError(msg)
 
 
 class UnlimitedLenArray(BaseBinaryFormat[list[T]], Generic[T]):
@@ -326,15 +316,12 @@ class UnlimitedLenArray(BaseBinaryFormat[list[T]], Generic[T]):
 
         items_data = data
         while items_data:
-            needed_len = None
             try:
                 needed_len = self._item_format.get_bytes_length()
             except NotImplementedError:
-                pass
-            if needed_len:
-                data_part = items_data[0:needed_len]
-            else:
-                data_part = items_data
+                needed_len = None
+
+            data_part = items_data[0:needed_len] if needed_len else items_data
             unpack_res = self._item_format.unpack(data_part)
             unpacked_item = unpack_res.data[0]
             bytes_len = unpack_res.unpacked_bytes_length
@@ -344,7 +331,8 @@ class UnlimitedLenArray(BaseBinaryFormat[list[T]], Generic[T]):
         return UnpackResult(result, total_bytes)
 
     def get_bytes_length(self) -> int:
-        raise NotImplementedError("Нельзя определить не распаковав данные")
+        msg = "Нельзя определить не распаковав данные"
+        raise NotImplementedError(msg)
 
     def _pack_none(self) -> bytes:
         return b""
@@ -575,12 +563,12 @@ class GroupFormat(BaseBinaryFormat):
         current_args = values
         total_packed = b""
         total_packed_items = 0
-        for i, _format in enumerate(self._child_formats):
-            # arg = args[i] if i < len(args) else None
+        for _format in self._child_formats:
             try:
                 current_pack_result = _format.pack(current_args)
             except Exception as ex:
-                raise ValueError(f"Error pack {_format=} {current_args=}") from ex
+                msg = f"Error pack {_format=} {current_args=}"
+                raise ValueError(msg) from ex
             total_packed += current_pack_result.packed
             total_packed_items += current_pack_result.packed_items_count
             current_args = current_args[current_pack_result.packed_items_count:] if current_pack_result.packed_items_count < len(
@@ -591,25 +579,25 @@ class GroupFormat(BaseBinaryFormat):
         result = []
         _data = data
         total_unpacked_bytes = 0
-        for i, _format in enumerate(self._child_formats):
-            needed_len = None
+        for _format in self._child_formats:
+
             try:
                 needed_len = _format.get_bytes_length()
             except NotImplementedError:
-                pass
-            if needed_len:
-                data_part = _data[0:needed_len]
-            else:
-                data_part = _data
+                needed_len = None
+
+            data_part = _data[0:needed_len] if needed_len else _data
             try:
                 unpack_result = _format.unpack(data_part)
             except Exception as ex:
-                raise ValueError(f"Unpack error {_format=}, {data_part=}") from ex
+                msg = f"Unpack error {_format=}, {data_part=}"
+                raise ValueError(msg) from ex
             result.extend(unpack_result.data)
-            if unpack_result.unpacked_bytes_length < len(data):
-                _data = _data[unpack_result.unpacked_bytes_length:]
-            else:
-                _data = b""
+            _data = (
+                _data[unpack_result.unpacked_bytes_length:]
+                if unpack_result.unpacked_bytes_length < len(data)
+                else b""
+            )
             total_unpacked_bytes += unpack_result.unpacked_bytes_length
         return UnpackResult(tuple(result), total_unpacked_bytes)
 

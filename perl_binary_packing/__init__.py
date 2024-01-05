@@ -3,26 +3,31 @@ from typing import Any
 from perl_binary_packing.factory import parse_format
 
 
-def pack(format_str: str, *args) -> bytes:
+class PackError(Exception):
+    pass
+
+
+class UnPackError(Exception):
+    pass
+
+def pack(format_str: str, *args: Any) -> bytes:
     try:
         return _pack(format_str, *args)
     except Exception as ex:
-        raise Exception(f"Error while packing {args} with {format_str=}") from ex
+        msg = f"Error while packing {args} with {format_str=}"
+        raise PackError(msg) from ex
 
 
-def _pack(format_str: str, *args) -> bytes:
-    # if len(args) == 1 and isinstance(args[0], (list, tuple)):
-    #     args = args[0]
+def _pack(format_str: str, *args: Any) -> bytes:
     formats = parse_format(format_str)
     packed = b""
-    full_args = args
     current_args = args
-    for i, _format in enumerate(formats):
-        # arg = args[i] if i < len(args) else None
+    for _format in formats:
         try:
             _packed = _format.pack(current_args)
         except Exception as ex:
-            raise ValueError(f"Error pack {_format=} {current_args=}") from ex
+            msg = f"Error pack {_format=} {current_args=}"
+            raise PackError(msg) from ex
         packed += _packed.packed
         current_args = current_args[_packed.packed_items_count:] if _packed.packed_items_count < len(
             current_args) else tuple()
@@ -33,7 +38,8 @@ def unpack(format_str: str, data: bytes) -> tuple[Any]:
     try:
         return _unpack(format_str, data)
     except Exception as ex:
-        raise Exception(f"Error while unpacking {data} with {format_str=}") from ex
+        msg = f"Error while unpacking {data} with {format_str=}"
+        raise UnPackError(msg) from ex
 
 
 def _unpack(format_str: str, data: bytes) -> tuple[Any]:
@@ -41,22 +47,16 @@ def _unpack(format_str: str, data: bytes) -> tuple[Any]:
     result = []
     _data = data
     for _format in formats:
-        needed_len = None
         try:
             needed_len = _format.get_bytes_length()
         except NotImplementedError:
-            pass
-        if needed_len:
-            data_part = _data[0:needed_len]
-        else:
-            data_part = _data
+            needed_len = None
+        data_part = _data[0:needed_len]  if needed_len else _data
         try:
             unpack_result = _format.unpack(data_part)
         except Exception as ex:
-            raise ValueError(f"Unpack error {_format=}, {data_part=}") from ex
+            msg = f"Unpack error {_format=}, {data_part=}"
+            raise UnPackError(msg) from ex
         result.extend(unpack_result.data)
-        if unpack_result.unpacked_bytes_length < len(data):
-            _data = _data[unpack_result.unpacked_bytes_length:]
-        else:
-            _data = b""
+        _data = _data[unpack_result.unpacked_bytes_length:] if unpack_result.unpacked_bytes_length < len(data) else b""
     return tuple(result)

@@ -48,7 +48,6 @@ simple_formats = {
 
     "c": SignedChar(),
     "C": UnSignedChar(),
-    # "w": AsciiNullPaddedString(),
 
     "s": SignedShort(),
     "S": UnSignedShort(),
@@ -102,7 +101,8 @@ def get_next_format(format_str: str) -> str:
         count = get_repeat_count_str(format_str[1:])
         return format_str[0] + count
 
-    raise NotImplementedError(f"format={format_str}")
+    msg = f"format={format_str}"
+    raise NotImplementedError(msg)
 
 
 def _parse_format_simple(format_str: str) -> BaseBinaryFormat:
@@ -158,7 +158,6 @@ def parse_format(format_str: str) -> list[BaseBinaryFormat]:
                 formats.append(current_format)
             else:
                 item_format = _parse_format_simple(item_format_str)
-                # current_format = FixedLenArray(item_format, count)
                 current_formats = [item_format] * count
                 formats.extend(current_formats)
             format_len = match.regs[0][1] - match.regs[0][0]
@@ -184,7 +183,6 @@ def parse_format(format_str: str) -> list[BaseBinaryFormat]:
                 formats.append(current_format)
             else:
                 item_format = parse_format(item_format_str)[0]
-                # current_format = FixedLenArray(item_format, count)
                 current_formats = [item_format] * count
                 formats.extend(current_formats)
             format_len = match.regs[0][1] - match.regs[0][0]
@@ -214,4 +212,3 @@ def parse_format(format_str: str) -> list[BaseBinaryFormat]:
             format_str_tmp = format_str_tmp[1:]
     group = GroupFormat(tuple(formats))
     return [group]
-    # return formats

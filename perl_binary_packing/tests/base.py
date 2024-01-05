@@ -1,6 +1,6 @@
 import dataclasses
 import unittest
-from typing import Generic
+from typing import ClassVar, Generic
 
 from perl_binary_packing.formats import BaseBinaryFormat, T
 
@@ -15,28 +15,28 @@ class SubTestCase(Generic[T]):
 
 
 class BaseTestBinaryFormat(unittest.TestCase, Generic[T]):
-    examples: list[SubTestCase[T]] = []
+    examples: ClassVar[list[SubTestCase]] = []
     _format: BaseBinaryFormat[T]
 
     def _get_format(self) -> BaseBinaryFormat[T]:
         return self._format
 
-    def test_simple_packing(self):
+    def test_simple_packing(self) -> None:
         for example in self.examples:
             with self.subTest(example.value):
                 packed = self._pack(example.value)
                 self.assertEqual(packed, example.binary)
 
-    def test_simple_unpacking(self):
+    def test_simple_unpacking(self) -> None:
         for example in self.examples:
             with self.subTest(example.value):
                 unpacked = self._unpack(example.binary)
                 self.assertEqual(unpacked, example.value)
 
     def _pack(self, value: T) -> bytes:
-        format = self._get_format()
-        return format._pack(value)
+        format_ = self._get_format()
+        return format_._pack(value)
 
     def _unpack(self, data: bytes) -> T:
-        format = self._get_format()
-        return format.unpack(data).data[0]
+        format_ = self._get_format()
+        return format_.unpack(data).data[0]

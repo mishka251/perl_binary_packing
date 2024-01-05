@@ -1,7 +1,9 @@
 import json
 import struct
 import unittest
-from typing import Any, TypedDict
+from collections.abc import Iterable
+from pathlib import Path
+from typing import Any, ClassVar, TypedDict
 
 from perl_binary_packing import pack, unpack
 
@@ -25,8 +27,8 @@ class TestUnPackData(TypedDict):
 
 class TestFinal(unittest.TestCase):
     json_test_file = "test_data.json"
-    _test_packing: list[TestPackData] = []
-    _test_unpacking: list[TestUnPackData] = []
+    _test_packing: ClassVar[list[TestPackData]] = []
+    _test_unpacking: ClassVar[list[TestUnPackData]] = []
 
     @classmethod
     def _binary_hexes_to_bytes(cls, expected_packed_str: list[str]) -> bytes:
@@ -35,7 +37,7 @@ class TestFinal(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         super().setUpClass()
-        with open(cls.json_test_file) as file:
+        with Path(cls.json_test_file).open(encoding="cp1251") as file:
             test_data = json.load(file)
 
         if "test_pack" in test_data:
@@ -67,26 +69,26 @@ class TestFinal(unittest.TestCase):
             result += hex(byte) + " "
         return result
 
-    def test_packing(self):
+    def test_packing(self) -> None:
         for test_pack in self._test_packing:
             with self.subTest(**test_pack):
                 self._subtest_pack(test_pack)
 
-    def _subtest_pack(self, test_pack: TestPackData):
-        format = test_pack["format"]
+    def _subtest_pack(self, test_pack: TestPackData) -> None:
+        _format = test_pack["format"]
         to_pack = test_pack["to_pack"]
         expected = test_pack["expected_packed"]
         to_pack = [self._format_value(item) for item in to_pack]
-        packed = pack(format, *to_pack)
+        packed = pack(_format, *to_pack)
         to_pack_view = self._format_array(to_pack)
-        test_msg = f'Checking: pack({format}, {to_pack_view})/ Expected: "{self._format_bytes(expected)}", actual: "{self._format_bytes(packed)}"'
+        test_msg = f'Checking: pack({_format}, {to_pack_view})/ Expected: "{self._format_bytes(expected)}", actual: "{self._format_bytes(packed)}"'
         self.assertEqual(
             expected,
             packed,
             test_msg,
         )
 
-    def test_unpacking(self):
+    def test_unpacking(self) -> None:
         for test_unpack in self._test_unpacking:
             with self.subTest(**test_unpack):
                 self._subtest_unpack(test_unpack)
@@ -102,21 +104,20 @@ class TestFinal(unittest.TestCase):
         }
         return possible_types[_type](raw_value)
 
-    def _subtest_unpack(self, test_unpack: TestUnPackData):
-        format = test_unpack["format"]
+    def _subtest_unpack(self, test_unpack: TestUnPackData) -> None:
+        _format = test_unpack["format"]
         to_unpack = test_unpack["to_unpack"]
         expected_objects = test_unpack["expected_unpacked"]
         expected_values = [self._format_value(expected_object) for expected_object in expected_objects]
-        unpacked = list(unpack(format, to_unpack))
-        # to_pack_view = "[" + ", ".join(map(lambda s: f'"{s}"', to_pack)) + "]"
+        unpacked = list(unpack(_format, to_unpack))
         expected_view = self._format_array(expected_values)
         unpacked_view = self._format_array(unpacked)
-        test_msg = f'Checking: pack({format}, {self._format_bytes(to_unpack)})/ Expected: "{expected_view}", actual: "{unpacked_view}"'
+        test_msg = f'Checking: pack({_format}, {self._format_bytes(to_unpack)})/ Expected: "{expected_view}", actual: "{unpacked_view}"'
         self.assertListEqual(
             expected_values,
             unpacked,
             test_msg,
         )
 
-    def _format_array(self, arr):
-        return "[" + ", ".join(map(lambda s: f'"{s}"', arr)) + "]"
+    def _format_array(self, arr: Iterable[Any]) -> str:
+        return "[" + ", ".join(f'"{s}"' for s in arr) + "]"

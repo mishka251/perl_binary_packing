@@ -1,3 +1,4 @@
+from typing import ClassVar
 
 from perl_binary_packing.formats import AsciiNullPaddedChar, NullPaddedChar, SpacePaddedChar
 from perl_binary_packing.tests.base import BaseTestBinaryFormat, SubTestCase
@@ -5,7 +6,7 @@ from perl_binary_packing.tests.base import BaseTestBinaryFormat, SubTestCase
 
 class TestNullPaddedString(BaseTestBinaryFormat[bytes]):
     _format = NullPaddedChar()
-    examples = [
+    examples: ClassVar[list[SubTestCase]] = [
         SubTestCase(b"1", b"1"),
         SubTestCase(b"z", b"z"),
         SubTestCase(b"a", b"a"),
@@ -13,13 +14,13 @@ class TestNullPaddedString(BaseTestBinaryFormat[bytes]):
         SubTestCase(b"=", b"="),
     ]
 
-    def test_pack_long(self):
+    def test_pack_long(self) -> None:
         expected = b"z"
         value = b"zz"
         actual = self._pack(value)
         self.assertEqual(expected, actual)
 
-    def test_unpack_long(self):
+    def test_unpack_long(self) -> None:
         expected = b"z"
         value = b"z"
         actual = self._unpack(value)
@@ -28,7 +29,7 @@ class TestNullPaddedString(BaseTestBinaryFormat[bytes]):
 
 class TestSpacePaddedString(BaseTestBinaryFormat[bytes]):
     _format = SpacePaddedChar()
-    examples = [
+    examples: ClassVar[list[SubTestCase]] = [
         SubTestCase(b"1", b"1"),
         SubTestCase(b"z", b"z"),
         SubTestCase(b"a", b"a"),
@@ -36,13 +37,13 @@ class TestSpacePaddedString(BaseTestBinaryFormat[bytes]):
         SubTestCase(b"=", b"="),
     ]
 
-    def test_pack_long(self):
+    def test_pack_long(self) -> None:
         expected = b"z"
         value = b"zz"
         actual = self._pack(value)
         self.assertEqual(expected, actual)
 
-    def test_unpack_long(self):
+    def test_unpack_long(self) -> None:
         expected = b"z"
         value = b"z"
         actual = self._unpack(value)
@@ -51,21 +52,21 @@ class TestSpacePaddedString(BaseTestBinaryFormat[bytes]):
 
 class TestAsciiNullString(BaseTestBinaryFormat[bytes]):
     _format = AsciiNullPaddedChar()
-    examples = [
-        # SubTestCase(b"1", b"1"),
-        # SubTestCase(b"z", b"z"),
-        # SubTestCase(b"a", b"a"),
-        # SubTestCase(b"f", b"f"),
-        # SubTestCase(b"=", b"="),
+    examples: ClassVar[list[SubTestCase]] = [
+        SubTestCase(b"1", b"1"),
+        SubTestCase(b"z", b"z"),
+        SubTestCase(b"a", b"a"),
+        SubTestCase(b"f", b"f"),
+        SubTestCase(b"=", b"="),
     ]
 
-    def test_pack_long(self):
+    def test_pack_long(self) -> None:
         expected = b"\0"
         value = b"zz"
         actual = self._pack(value)
         self.assertEqual(expected, actual)
 
-    def test_unpack_long(self):
+    def test_unpack_long(self) -> None:
         expected = b"z"
         value = b"z"
         actual = self._unpack(value)
