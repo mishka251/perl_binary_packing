@@ -29,8 +29,11 @@ def _pack(format_str: str, *args: Any) -> bytes:
             msg = f"Error pack {_format=} {current_args=}"
             raise PackError(msg) from ex
         packed += _packed.packed
-        current_args = current_args[_packed.packed_items_count:] if _packed.packed_items_count < len(
-            current_args) else tuple()
+        current_args = (
+            current_args[_packed.packed_items_count:]
+            if _packed.packed_items_count < len(current_args)
+            else tuple()  # noqa: C408
+        )
     return packed
 
 
@@ -51,7 +54,7 @@ def _unpack(format_str: str, data: bytes) -> tuple[Any]:
             needed_len = _format.get_bytes_length()
         except NotImplementedError:
             needed_len = None
-        data_part = _data[0:needed_len]  if needed_len else _data
+        data_part = _data[0:needed_len] if needed_len else _data
         try:
             unpack_result = _format.unpack(data_part)
         except Exception as ex:

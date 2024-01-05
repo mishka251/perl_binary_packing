@@ -219,6 +219,7 @@ class Float(PythonSupportedFormat[float]):
 
 
 class Double(PythonSupportedFormat[float]):
+
     """Perl не совсем соответствует IEEE754, а python реализует его. Проблема.."""
 
     # d
@@ -573,7 +574,8 @@ class GroupFormat(BaseBinaryFormat):
             total_packed_items += current_pack_result.packed_items_count
             current_args = (
                 current_args[current_pack_result.packed_items_count:]
-                if current_pack_result.packed_items_count < len(current_args) else tuple()
+                if current_pack_result.packed_items_count < len(current_args)
+                else tuple()  # noqa: C408
             )
         return PackResult(total_packed, total_packed_items)
 

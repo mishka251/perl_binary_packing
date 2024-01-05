@@ -77,7 +77,7 @@ def get_repeat_count_str(format_str: str) -> str:
     return ""
 
 
-def get_next_format(format_str: str) -> str:
+def get_next_format(format_str: str) -> str:  # noqa: PLR0911
     with_count_format_re = r"^./."
     if re.match(with_count_format_re, format_str):
         return format_str[:3]
@@ -109,7 +109,7 @@ def _parse_format_simple(format_str: str) -> BaseBinaryFormat:
     return simple_formats[format_str]
 
 
-def parse_format(format_str: str) -> list[BaseBinaryFormat]:
+def parse_format(format_str: str) -> list[BaseBinaryFormat]:  # noqa: C901,PLR0912,PLR0914,PLR0915
     with_dynamic_count_format_re = r"^(?P<count_format>.)/(?P<item_format>.)"
     with_dynamic_count_group_format_re = r"^(?P<count_format>.)/\((?P<item_format>.*)\)"
     with_static_count_format_re = r"^(?P<item_format>.)\[?(?P<count>\d+)\]?"

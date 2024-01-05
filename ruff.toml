@@ -121,6 +121,13 @@ ignore = [
     "ANN102",
     "FA100",
     "ANN401",
+    "D211",
+    "D212",
+
+
+    # tmp
+    "BLE001",
+    "SLF001",
 ]
 
 # Allow fix for all enabled rules (when `--fix`) is provided.
