@@ -571,8 +571,10 @@ class GroupFormat(BaseBinaryFormat):
                 raise ValueError(msg) from ex
             total_packed += current_pack_result.packed
             total_packed_items += current_pack_result.packed_items_count
-            current_args = current_args[current_pack_result.packed_items_count:] if current_pack_result.packed_items_count < len(
-                current_args) else tuple()
+            current_args = (
+                current_args[current_pack_result.packed_items_count:]
+                if current_pack_result.packed_items_count < len(current_args) else tuple()
+            )
         return PackResult(total_packed, total_packed_items)
 
     def unpack(self, data: bytes) -> UnpackResult[list[T]]:
