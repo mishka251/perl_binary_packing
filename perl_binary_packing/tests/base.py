@@ -16,19 +16,23 @@ class SubTestCase(Generic[T]):
 
 class BaseTestBinaryFormat(unittest.TestCase, Generic[T]):
     examples: ClassVar[list[SubTestCase]] = []
+    pack_examples: ClassVar[list[SubTestCase]] = []
+    unpack_examples: ClassVar[list[SubTestCase]] = []
     _format: BaseBinaryFormat[T]
 
     def _get_format(self) -> BaseBinaryFormat[T]:
         return self._format
 
     def test_simple_packing(self) -> None:
-        for example in self.examples:
+        examples = (self.pack_examples or self.examples)
+        for example in examples:
             with self.subTest(example.value):
                 packed = self._pack(example.value)
                 self.assertEqual(packed, example.binary)
 
     def test_simple_unpacking(self) -> None:
-        for example in self.examples:
+        examples = (self.unpack_examples or self.examples)
+        for example in examples:
             with self.subTest(example.value):
                 unpacked = self._unpack(example.binary)
                 self.assertEqual(unpacked, example.value)

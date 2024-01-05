@@ -52,7 +52,14 @@ class TestSpacePaddedString(BaseTestBinaryFormat[bytes]):
 
 class TestAsciiNullString(BaseTestBinaryFormat[bytes]):
     _format = AsciiNullPaddedChar()
-    examples: ClassVar[list[SubTestCase]] = [
+    pack_examples: ClassVar[list[SubTestCase]] = [
+        SubTestCase(b"1", b"\0"),
+        SubTestCase(b"z", b"\0"),
+        SubTestCase(b"a", b"\0"),
+        SubTestCase(b"f", b"\0"),
+        SubTestCase(b"=", b"\0"),
+    ]
+    unpack_examples: ClassVar[list[SubTestCase]] = [
         SubTestCase(b"1", b"1"),
         SubTestCase(b"z", b"z"),
         SubTestCase(b"a", b"a"),
