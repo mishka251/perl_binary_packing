@@ -1,4 +1,5 @@
 from pathlib import Path
+
 import setuptools
 
 with Path("README.md").open(encoding="utf-8") as fh:
