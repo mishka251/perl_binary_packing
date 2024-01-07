@@ -11,7 +11,7 @@ jobs:
         os: ['ubuntu-latest', 'macos-latest', 'windows-latest']
     name: Test Perl ${{ matrix.perl-version }} on ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set up Perl ${{ matrix.python-version }} on ${{ matrix.os }}
         uses: shogo82148/actions-setup-perl@v1
         with:
