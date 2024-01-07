@@ -1,30 +1,20 @@
 name: perl_test
 
-on:
-  push:
-    branches:
-      - '*'
-    tags-ignore:
-      - '*'
-  pull_request:
+on: [push]
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         perl-version: ["5.24.0", "5.30.0", "5.38.0" ]
+        os: ['ubuntu-latest', 'macos-latest', 'windows-latest']
+    name: Test Perl ${{ matrix.perl-version }} on ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
-      - name: Set up Perl ${{ matrix.python-version }}
+      - name: Set up Perl ${{ matrix.python-version }} on ${{ matrix.os }}
         uses: shogo82148/actions-setup-perl@v1
         with:
           perl-version: ${{ matrix.perl-version }}
       - run: perl -V
-#      - run: perl -MConfig -MData::Dumper -e 'local $Data::Dumper::Sortkeys = 1;warn Dumper \%Config;'
-#      - run: perl cpanm ExtUtils::CBuilder
-#      - run: perl cpanm -L ~/mylib -n SPVM
-#      - run: echo "PERL5LIB=$HOME/mylib/lib/perl5/"$(perl -MConfig -e 'print $Config{archname}') >> $GITHUB_ENV
       - run: perl test.pl
-#      - run: make
-#      - run: make disttest
