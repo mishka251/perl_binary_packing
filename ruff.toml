@@ -96,37 +96,28 @@ select = [
 ]
 ignore = [
     "ANN101",
-    "D102",
-    "T201",
-    "D101",
-    "D100",
-    "D107",
-    "PT009",
-    "N802",
+    "ANN102", # type cls
     "ANN204",
+    "ANN401", # typeing - Any
+    "ARG002", # неиспользуемый аргумент
+
+    "D100",
+    "D101",
+    "D102",
     "D103",
     "D103",
-    "RUF003",
-    "PLR2004",
     "D104",
-    "CPY001",
-    "RUF002",
-    "PLR6301",
     "D105",
-    "ARG002",
-    "ANN102",
-    "FA100",
-    "ANN401",
+    "D107",
+    "D203",
     "D211",
     "D212",
-    "D203",
-    "UP038",
 
-
-    # tmp
-    "BLE001",
-    "SLF001",
-    "RUF012", # ???
+    "PT009", # assertEqual
+    "RUF002", # кириллица в комментариях
+    "RUF012", # ClassVar - Generic class
+    "SLF001", # protected member
+    "UP038", # isisnstance(..., (X|Y))
 ]
 
 # Allow fix for all enabled rules (when `--fix`) is provided.

@@ -9,18 +9,18 @@ from perl_binary_packing import pack, unpack
 
 
 class ValueWithFormat(TypedDict):
-    type: str
+    type: str  # noqaA003,VNE003
     value: Any
 
 
 class TestPackData(TypedDict):
-    format: str
+    used_format: str
     to_pack: list[ValueWithFormat]
     expected_packed: bytes
 
 
 class TestUnPackData(TypedDict):
-    format: str
+    used_format: str
     to_unpack: bytes
     expected_unpacked: list[ValueWithFormat]
 
@@ -47,7 +47,7 @@ class TestFinal(unittest.TestCase):
 
             cls._test_packing = [
                 TestPackData(
-                    format=test_pack["format"],
+                    used_format=test_pack["format"],
                     to_pack=test_pack["to_pack"],
                     expected_packed=cls._binary_hexes_to_bytes(
                         test_pack["expected_packed"],
@@ -60,7 +60,7 @@ class TestFinal(unittest.TestCase):
 
             cls._test_unpacking = [
                 TestUnPackData(
-                    format=test_unpack["format"],
+                    used_format=test_unpack["format"],
                     to_unpack=cls._binary_hexes_to_bytes(test_unpack["to_unpack"]),
                     expected_unpacked=test_unpack["expected_unpacked"],
                 )
@@ -79,7 +79,7 @@ class TestFinal(unittest.TestCase):
                 self._subtest_pack(test_pack)
 
     def _subtest_pack(self, test_pack: TestPackData) -> None:
-        _format = test_pack["format"]
+        _format = test_pack["used_format"]
         to_pack = test_pack["to_pack"]
         expected = test_pack["expected_packed"]
         to_pack = [self._format_value(item) for item in to_pack]
@@ -109,7 +109,7 @@ class TestFinal(unittest.TestCase):
         return possible_types[_type](raw_value)
 
     def _subtest_unpack(self, test_unpack: TestUnPackData) -> None:
-        _format = test_unpack["format"]
+        _format = test_unpack["used_format"]
         to_unpack = test_unpack["to_unpack"]
         expected_objects = test_unpack["expected_unpacked"]
         expected_values = [

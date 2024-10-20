@@ -1,4 +1,5 @@
 [flake8]
+min_python_version = 3.12
 max-line-length = 120
 inline-quotes = "
 extend-ignore =
@@ -20,46 +21,19 @@ extend-ignore =
     D106
     D107
 
-    ; print
-    T201
-
     ; allow ternary
     IF100
 
-    ; tmp
-    CCR001
-    C413
-    ECE001
-    ; line len
-    E501
-    DM001
 
-    ; redefine builtin
-    A003
-    VNE003
-
-
-    TYP001
-    ANN001
-
-    N806
-    VNE001
-    ANN201
-    ANN202
-    D200
+    ; пробелы около :
     E203
-    DAR401
-    D400
-    S308
-    S314
-    S320
-    S405
-    S410
-    S703
-    SIM910
-    VNE002
-    S410
-    ABS101
+
+    ; tmp - сложность функции
+    CCR001
+
+    ; длинна строки
+    E501
+
 
 
 
