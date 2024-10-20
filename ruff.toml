@@ -21,17 +21,14 @@ exclude = [
     "dist",
     "node_modules",
     "venv",
-
-
-    "xr", # not covered
 ]
 
 # Same as Black.
 line-length = 150
 indent-width = 4
 
-# Assume Python 3.9
-target-version = "py39"
+# Assume Python 3.12
+target-version = "py312"
 
 [lint]
 # Enable Pyflakes (`F`) and a subset of the pycodestyle (`E`)  codes by default.
@@ -49,14 +46,13 @@ select = [
     "YTT",
     "ANN",
     "ASYNC",
-    "TRIO",
+    "ASYNC1",
     "S",
     "BLE",
     "FBT",
     "B",
     "A",
     "COM",
-    "CPY",
     "C4",
     "DTZ",
     "T10",
@@ -123,11 +119,14 @@ ignore = [
     "ANN401",
     "D211",
     "D212",
+    "D203",
+    "UP038",
 
 
     # tmp
     "BLE001",
     "SLF001",
+    "RUF012", # ???
 ]
 
 # Allow fix for all enabled rules (when `--fix`) is provided.

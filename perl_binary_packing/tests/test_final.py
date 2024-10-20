@@ -1,7 +1,7 @@
 import json
 import struct
 import unittest
-from collections.abc import Iterable
+from collections.abc import Callable, Iterable
 from pathlib import Path
 from typing import Any, ClassVar, TypedDict
 
@@ -32,7 +32,9 @@ class TestFinal(unittest.TestCase):
 
     @classmethod
     def _binary_hexes_to_bytes(cls, expected_packed_str: list[str]) -> bytes:
-        return b"".join([struct.pack("B", int(byte, 16)) for byte in expected_packed_str])
+        return b"".join(
+            [struct.pack("B", int(byte, 16)) for byte in expected_packed_str],
+        )
 
     @classmethod
     def setUpClass(cls) -> None:
@@ -47,7 +49,9 @@ class TestFinal(unittest.TestCase):
                 TestPackData(
                     format=test_pack["format"],
                     to_pack=test_pack["to_pack"],
-                    expected_packed=cls._binary_hexes_to_bytes(test_pack["expected_packed"]),
+                    expected_packed=cls._binary_hexes_to_bytes(
+                        test_pack["expected_packed"],
+                    ),
                 )
                 for test_pack in test_packing
             ]
@@ -96,11 +100,11 @@ class TestFinal(unittest.TestCase):
     def _format_value(self, expected_object: ValueWithFormat) -> Any:
         _type = expected_object["type"]
         raw_value = expected_object["value"]
-        possible_types = {
-            "str": str,
+        possible_types: dict[str, Callable[[Any], object]] = {
+            "str": lambda s: str(s),
             "bytes": lambda s: s.replace("0x00", "\0").encode(),
-            "int": int,
-            "float": float,
+            "int": lambda s: int(s),
+            "float": lambda s: float(s),
         }
         return possible_types[_type](raw_value)
 
@@ -108,7 +112,9 @@ class TestFinal(unittest.TestCase):
         _format = test_unpack["format"]
         to_unpack = test_unpack["to_unpack"]
         expected_objects = test_unpack["expected_unpacked"]
-        expected_values = [self._format_value(expected_object) for expected_object in expected_objects]
+        expected_values = [
+            self._format_value(expected_object) for expected_object in expected_objects
+        ]
         unpacked = list(unpack(_format, to_unpack))
         expected_view = self._format_array(expected_values)
         unpacked_view = self._format_array(unpacked)

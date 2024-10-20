@@ -1,6 +1,6 @@
 import dataclasses
 import struct
-from typing import Generic, Optional, TypeVar
+from typing import Any, Generic, TypeVar
 
 T = TypeVar("T")
 
@@ -44,15 +44,15 @@ class ByteNybbles:
 
 
 class BaseBinaryFormat(Generic[T]):
-    def pack(self, values: tuple[T]) -> PackResult:
-        value = values[0] if values else None
-        if self._value_is_empty(value):
+    def pack(self, values: tuple[Any, ...]) -> PackResult:
+        value: T | None = values[0] if values else None
+        if value is None or self._value_is_empty(value):
             packed = self._pack_none()
             return PackResult(packed, 0)
         packed = self._pack(value)
         return PackResult(packed, 1)
 
-    def _value_is_empty(self, value: Optional[T]) -> bool:
+    def _value_is_empty(self, value: T | None) -> bool:
         return value is None
 
     def _pack(self, value: T) -> bytes:
@@ -79,7 +79,7 @@ class PythonSupportedFormat(BaseBinaryFormat[T]):
 
     def unpack(self, data: bytes) -> UnpackResult[T]:
         size = self.get_bytes_length()
-        packed_data = struct.unpack(self._get_format(), data)
+        packed_data = struct.unpack(self._get_format(), data)[0]
         return UnpackResult(packed_data, size)
 
     def get_bytes_length(self) -> int:
@@ -87,6 +87,7 @@ class PythonSupportedFormat(BaseBinaryFormat[T]):
 
 
 # region binary
+
 
 class HexStringLowNybbleFirst(PythonSupportedFormat[str]):
     # h
@@ -98,7 +99,7 @@ class HexStringLowNybbleFirst(PythonSupportedFormat[str]):
         return bytes([byte])
 
 
-class HexStringHighNybbleFirst(PythonSupportedFormat[bytes]):
+class HexStringHighNybbleFirst(PythonSupportedFormat[str]):
     # H
     _python_format = "s"
 
@@ -106,6 +107,7 @@ class HexStringHighNybbleFirst(PythonSupportedFormat[bytes]):
         high_nybble = int(value[0], base=16)
         byte = high_nybble << 4
         return bytes([byte])
+
 
 # endregion binary
 
@@ -123,7 +125,7 @@ class SpacePaddedChar(PythonSupportedFormat[bytes]):
     def _pack_none(self) -> bytes:
         return b" "
 
-    def _value_is_empty(self, value: Optional[T]) -> bool:
+    def _value_is_empty(self, value: T | None) -> bool:
         return value is None or value == b""
 
 
@@ -214,13 +216,13 @@ class VAXUnSignedLong(PythonSupportedFormat[int]):
 
 # region floats
 
+
 class Float(PythonSupportedFormat[float]):
     # f
     _python_format = "f"
 
 
 class Double(PythonSupportedFormat[float]):
-
     """Perl не совсем соответствует IEEE754, а python реализует его. Проблема.."""
 
     # d
@@ -248,10 +250,10 @@ class FixedLenArray(BaseBinaryFormat[list[T]], Generic[T]):
         items_data = data
         for _ in range(self._count):
             data_part = items_data
-            unpacked_item, bytes_len = self._item_format.unpack(data_part)
-            result.append(unpacked_item)
-            total_bytes += bytes_len
-            items_data = items_data[bytes_len:]
+            item_result = self._item_format.unpack(data_part)
+            result.append(item_result.data)
+            total_bytes += item_result.unpacked_bytes_length
+            items_data = items_data[item_result.unpacked_bytes_length :]
         return UnpackResult(result, total_bytes)
 
     def get_bytes_length(self) -> int:
@@ -260,11 +262,15 @@ class FixedLenArray(BaseBinaryFormat[list[T]], Generic[T]):
 
 class DynamicLenArray(BaseBinaryFormat[list[T]], Generic[T]):
     # LENGTH_TYPE/ITEM_TYPE
-    def __init__(self, inner_format: BaseBinaryFormat[T], count_format: BaseBinaryFormat[int]):
+    def __init__(
+        self,
+        inner_format: BaseBinaryFormat[T],
+        count_format: BaseBinaryFormat[int],
+    ):
         self._count_format = count_format
         self._item_format = inner_format
 
-    def pack(self, values: tuple[T]) -> PackResult:
+    def pack(self, values: tuple[Any, ...]) -> PackResult:
         if not values:
             packed = self._pack_none()
             return PackResult(packed, 0)
@@ -275,12 +281,14 @@ class DynamicLenArray(BaseBinaryFormat[list[T]], Generic[T]):
         return PackResult(packed, len(values))
 
     def unpack(self, data: bytes) -> UnpackResult[list[T]]:
-        result = []
+        result: list[T] = []
         total_bytes = 0
-        count_unpack_result = self._count_format.unpack(data[0:self._count_format.get_bytes_length()])
-        count = count_unpack_result.data[0]
+        count_unpack_result = self._count_format.unpack(
+            data[0 : self._count_format.get_bytes_length()],
+        )
+        count = count_unpack_result.data
 
-        items_data = data[count_unpack_result.unpacked_bytes_length:]
+        items_data = data[count_unpack_result.unpacked_bytes_length :]
         total_bytes += count_unpack_result.unpacked_bytes_length
         for _ in range(count):
             try:
@@ -291,7 +299,10 @@ class DynamicLenArray(BaseBinaryFormat[list[T]], Generic[T]):
             data_part = items_data[0:needed_len] if needed_len else items_data
             unpacked = self._item_format.unpack(data_part)
             bytes_len = unpacked.unpacked_bytes_length
-            result.extend(unpacked.data)
+            if isinstance(unpacked.data, (list, tuple)):
+                result.extend(unpacked.data)
+            else:
+                result.append(unpacked.data)
             total_bytes += bytes_len
             items_data = items_data[bytes_len:]
         return UnpackResult(result, total_bytes)
@@ -325,7 +336,7 @@ class UnlimitedLenArray(BaseBinaryFormat[list[T]], Generic[T]):
 
             data_part = items_data[0:needed_len] if needed_len else items_data
             unpack_res = self._item_format.unpack(data_part)
-            unpacked_item = unpack_res.data[0]
+            unpacked_item = unpack_res.data
             bytes_len = unpack_res.unpacked_bytes_length
             result.append(unpacked_item)
             total_bytes += bytes_len
@@ -350,6 +361,7 @@ class FixedLenNullPaddedStr(PythonSupportedFormat[bytes]):
     def _get_format(self) -> str:
         return f"{self._count}{self._python_format}"
 
+
 class FixedLenSpacePaddedStr(PythonSupportedFormat[bytes]):
     # 10A
     _python_format = "s"
@@ -371,42 +383,48 @@ class AsciiNullPaddedStr(PythonSupportedFormat[bytes]):
     def _get_format(self) -> str:
         return f"{self._count - 1}{self._python_format}"
 
-    def _pack(self, value: list[bytes]) -> bytes:
+    def _pack(self, value: bytes) -> bytes:
         return super()._pack(value) + b"\0"
 
-    def unpack(self, data: bytes) -> UnpackResult[T]:
-        result = super().unpack(data)
-        return UnpackResult((result.data[0].decode(),), result.unpacked_bytes_length)
+    def unpack(self, data: bytes) -> UnpackResult[bytes]:
+        result: UnpackResult[bytes] = super().unpack(data)
+        return UnpackResult(result.data, result.unpacked_bytes_length)
 
 
-class UnlimitedAsciiString(UnlimitedLenArray[bytes]):
+class UnlimitedAsciiString(BaseBinaryFormat[bytes]):
+    _inner_format = UnlimitedLenArray[int](UnSignedChar())
 
-    def unpack(self, data: bytes) -> UnpackResult[list[T]]:
-        result = super().unpack(data)
+    def _pack(self, value: bytes) -> bytes:
+        return self._inner_format._pack(list(value))
 
-        return UnpackResult((bytes(result.data), ), result.unpacked_bytes_length)
+    def unpack(self, data: bytes) -> UnpackResult[bytes]:
+        result: UnpackResult[list[int]] = self._inner_format.unpack(data)
+
+        return UnpackResult(bytes(result.data), result.unpacked_bytes_length)
+
+    def _pack_none(self) -> bytes:
+        return b""
 
 
-class UnlimitedAsciiZString(UnlimitedLenArray[bytes]):
-    def __init__(self):
-        super().__init__(UnSignedChar())
+class UnlimitedAsciiZString(BaseBinaryFormat[str]):
+    _inner_format = UnlimitedLenArray[int](UnSignedChar())
 
     def _pack(self, value: str) -> bytes:
-        bytes_str = value.encode("cp1251")
-        return super()._pack(bytes_str) + b"\0"
+        bytes_str = list(value.encode("cp1251"))
+        return self._inner_format._pack(bytes_str) + b"\0"
 
     def _pack_none(self) -> bytes:
         return b"\0"
 
-    def unpack(self, data: bytes) -> UnpackResult[list[T]]:
+    def unpack(self, data: bytes) -> UnpackResult[str]:
         result = []
         total_bytes = 0
 
         items_data = data
         while items_data:
             data_part = items_data[0:1]
-            unpack_res = self._item_format.unpack(data_part)
-            unpacked_item = unpack_res.data[0]
+            unpack_res = self._inner_format._item_format.unpack(data_part)
+            unpacked_item = unpack_res.data
             bytes_len = unpack_res.unpacked_bytes_length
             if unpacked_item == 0:
                 total_bytes += bytes_len
@@ -414,14 +432,12 @@ class UnlimitedAsciiZString(UnlimitedLenArray[bytes]):
             result.append(unpacked_item)
             total_bytes += bytes_len
             items_data = items_data[bytes_len:]
-        return UnpackResult((bytes(result).decode("cp1251"),), total_bytes)
+        return UnpackResult(bytes(result).decode("cp1251"), total_bytes)
 
 
-class FirstLowNibbleUnlimitedArray(UnlimitedLenArray[str]):
+class FirstLowNibbleUnlimitedArray(BaseBinaryFormat[str]):
     # h*
 
-    def __init__(self):
-        pass
     def _pack(self, value: str) -> bytes:
         result = []
         for i, nybble_str in enumerate(value):
@@ -438,20 +454,21 @@ class FirstLowNibbleUnlimitedArray(UnlimitedLenArray[str]):
     def _pack_none(self) -> bytes:
         return b"\0"
 
-    def unpack(self, data: bytes) -> UnpackResult[list[T]]:
+    def unpack(self, data: bytes) -> UnpackResult[str]:
         result = ""
         for byte in data:
             nybbles = ByteNybbles(byte)
             current = f"{nybbles.low_nybble}{nybbles.high_nybble}"
             result += current
-        return UnpackResult((result,), len(data))
+        return UnpackResult(result, len(data))
 
-class FirstHighNibbleUnlimitedArray(UnlimitedLenArray[str]):
+    def get_bytes_length(self) -> int:
+        msg = "Нельзя определить не распаковав данные"
+        raise NotImplementedError(msg)
+
+
+class FirstHighNibbleUnlimitedArray(BaseBinaryFormat[str]):
     # H*
-
-    def __init__(self):
-        pass
-
 
     def _pack(self, value: str) -> bytes:
         result = []
@@ -469,18 +486,23 @@ class FirstHighNibbleUnlimitedArray(UnlimitedLenArray[str]):
     def _pack_none(self) -> bytes:
         return b"\0"
 
-    def unpack(self, data: bytes) -> UnpackResult[list[T]]:
+    def unpack(self, data: bytes) -> UnpackResult[str]:
         result = ""
         for byte in data:
             nybbles = ByteNybbles(byte)
             current = f"{nybbles.high_nybble}{nybbles.low_nybble}"
             result += current
-        return UnpackResult((result,), len(data))
+        return UnpackResult(result, len(data))
 
-class FirstLowNibbleCountedArray(UnlimitedLenArray[str]):
+    def get_bytes_length(self) -> int:
+        msg = "Нельзя определить не распаковав данные"
+        raise NotImplementedError(msg)
+
+
+class FirstLowNibbleCountedArray(BaseBinaryFormat[str]):
     # h5
 
-    def __init__(self, count: int):
+    def __init__(self, count: int) -> None:
         self._count = count
 
     def _pack(self, value: str) -> bytes:
@@ -501,7 +523,7 @@ class FirstLowNibbleCountedArray(UnlimitedLenArray[str]):
     def _pack_none(self) -> bytes:
         return b"\0"
 
-    def unpack(self, data: bytes) -> UnpackResult[list[T]]:
+    def unpack(self, data: bytes) -> UnpackResult[str]:
         result = ""
         for nybble_index in range(self._count):
             byte_index = nybble_index // 2
@@ -509,14 +531,19 @@ class FirstLowNibbleCountedArray(UnlimitedLenArray[str]):
                 break
             byte = data[byte_index]
             nybbles = ByteNybbles(byte)
-            current = f"{nybbles.low_nybble}" if nybble_index % 2 == 0 else f"{nybbles.high_nybble}"
+            current = (
+                f"{nybbles.low_nybble}"
+                if nybble_index % 2 == 0
+                else f"{nybbles.high_nybble}"
+            )
             result += current
-        return UnpackResult((result,), len(data))
+        return UnpackResult(result, len(data))
 
-class FirstHighNibbleCounteddArray(UnlimitedLenArray[str]):
+
+class FirstHighNibbleCounteddArray(BaseBinaryFormat[str]):
     # H5
 
-    def __init__(self, count: int):
+    def __init__(self, count: int) -> None:
         self._count = count
 
     def _pack(self, value: str) -> bytes:
@@ -540,7 +567,7 @@ class FirstHighNibbleCounteddArray(UnlimitedLenArray[str]):
     def _pack_none(self) -> bytes:
         return b"\0"
 
-    def unpack(self, data: bytes) -> UnpackResult[list[T]]:
+    def unpack(self, data: bytes) -> UnpackResult[str]:
         result = ""
         for nybble_index in range(self._count):
             byte_index = nybble_index // 2
@@ -548,20 +575,23 @@ class FirstHighNibbleCounteddArray(UnlimitedLenArray[str]):
                 break
             byte = data[byte_index]
             nybbles = ByteNybbles(byte)
-            current = f"{nybbles.high_nybble}" if nybble_index % 2 == 0 else f"{nybbles.low_nybble}"
+            current = (
+                f"{nybbles.high_nybble}"
+                if nybble_index % 2 == 0
+                else f"{nybbles.low_nybble}"
+            )
             result += current
-        return UnpackResult((result,), len(data))
+        return UnpackResult(result, len(data))
 
 
-class GroupFormat(BaseBinaryFormat):
-    _child_formats: tuple[BaseBinaryFormat, ...]
+class GroupFormat(BaseBinaryFormat[tuple[Any, ...]]):
+    _child_formats: tuple[BaseBinaryFormat[Any], ...]
 
-    def __init__(self, child_formats: tuple[BaseBinaryFormat, ...]):
+    def __init__(self, child_formats: tuple[BaseBinaryFormat[Any], ...]):
         super().__init__()
         self._child_formats = child_formats
 
-
-    def pack(self, values: tuple[T]) -> PackResult:
+    def pack(self, values: tuple[Any, ...]) -> PackResult:
         current_args = values
         total_packed = b""
         total_packed_items = 0
@@ -574,14 +604,14 @@ class GroupFormat(BaseBinaryFormat):
             total_packed += current_pack_result.packed
             total_packed_items += current_pack_result.packed_items_count
             current_args = (
-                current_args[current_pack_result.packed_items_count:]
+                current_args[current_pack_result.packed_items_count :]
                 if current_pack_result.packed_items_count < len(current_args)
                 else tuple()  # noqa: C408
             )
         return PackResult(total_packed, total_packed_items)
 
-    def unpack(self, data: bytes) -> UnpackResult[list[T]]:
-        result = []
+    def unpack(self, data: bytes) -> UnpackResult[tuple[Any, ...]]:
+        result: list[Any] = []
         _data = data
         total_unpacked_bytes = 0
         for _format in self._child_formats:
@@ -597,17 +627,20 @@ class GroupFormat(BaseBinaryFormat):
             except Exception as ex:
                 msg = f"Unpack error {_format=}, {data_part=}"
                 raise ValueError(msg) from ex
-            result.extend(unpack_result.data)
+            if isinstance(unpack_result.data, (tuple, list)):
+                result.extend(unpack_result.data)
+            else:
+                result.append(unpack_result.data)
             _data = (
-                _data[unpack_result.unpacked_bytes_length:]
+                _data[unpack_result.unpacked_bytes_length :]
                 if unpack_result.unpacked_bytes_length < len(data)
                 else b""
             )
             total_unpacked_bytes += unpack_result.unpacked_bytes_length
         return UnpackResult(tuple(result), total_unpacked_bytes)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"GroupFormat({self._child_formats})"
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"GroupFormat({self._child_formats})"

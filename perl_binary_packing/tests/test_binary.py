@@ -1,6 +1,8 @@
-from typing import ClassVar
-
-from perl_binary_packing.formats import AsciiNullPaddedChar, NullPaddedChar, SpacePaddedChar
+from perl_binary_packing.formats import (
+    AsciiNullPaddedChar,
+    NullPaddedChar,
+    SpacePaddedChar,
+)
 from perl_binary_packing.tests.base import BaseTestBinaryFormat, SubTestCase
 
 """
@@ -17,9 +19,11 @@ from perl_binary_packing.tests.base import BaseTestBinaryFormat, SubTestCase
   DB<40>
 
 """
+
+
 class TestNullPaddedString(BaseTestBinaryFormat[bytes]):
     _format = NullPaddedChar()
-    examples: ClassVar[list[SubTestCase]] = [
+    examples: list[SubTestCase[bytes]] = [
         SubTestCase(b"1", b"1"),
         SubTestCase(b"z", b"z"),
         SubTestCase(b"a", b"a"),
@@ -42,7 +46,7 @@ class TestNullPaddedString(BaseTestBinaryFormat[bytes]):
 
 class TestSpacePaddedString(BaseTestBinaryFormat[bytes]):
     _format = SpacePaddedChar()
-    examples: ClassVar[list[SubTestCase]] = [
+    examples: list[SubTestCase[bytes]] = [
         SubTestCase(b"1", b"1"),
         SubTestCase(b"z", b"z"),
         SubTestCase(b"a", b"a"),
@@ -65,14 +69,14 @@ class TestSpacePaddedString(BaseTestBinaryFormat[bytes]):
 
 class TestAsciiNullString(BaseTestBinaryFormat[bytes]):
     _format = AsciiNullPaddedChar()
-    pack_examples: ClassVar[list[SubTestCase]] = [
+    pack_examples: list[SubTestCase[bytes]] = [
         SubTestCase(b"1", b"\0"),
         SubTestCase(b"z", b"\0"),
         SubTestCase(b"a", b"\0"),
         SubTestCase(b"f", b"\0"),
         SubTestCase(b"=", b"\0"),
     ]
-    unpack_examples: ClassVar[list[SubTestCase]] = [
+    unpack_examples: list[SubTestCase[bytes]] = [
         SubTestCase(b"1", b"1"),
         SubTestCase(b"z", b"z"),
         SubTestCase(b"a", b"a"),

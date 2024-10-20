@@ -1,4 +1,5 @@
 import re
+from typing import Any
 
 from perl_binary_packing.formats import (
     AsciiNullPaddedChar,
@@ -37,43 +38,34 @@ from perl_binary_packing.formats import (
     VAXUnSignedShort,
 )
 
-simple_formats = {
+simple_formats: dict[str, BaseBinaryFormat[Any]] = {
     "h": HexStringLowNybbleFirst(),
     "H": HexStringHighNybbleFirst(),
-
-
     "a": NullPaddedChar(),
     "A": SpacePaddedChar(),
     "Z": AsciiNullPaddedChar(),
-
     "c": SignedChar(),
     "C": UnSignedChar(),
-
     "s": SignedShort(),
     "S": UnSignedShort(),
-
     "l": SignedLong(),
     "L": UnSignedLong(),
-
     "q": SignedLongLong(),
     "Q": UnSignedLongLong(),
-
     "i": SignedInteger(),
     "I": UnSignedInteger(),
     "n": NetWorkUnSignedShort(),
     "v": VAXUnSignedShort(),
     "N": NetWorkUnSignedLong(),
     "V": VAXUnSignedLong(),
-
     "f": Float(),
     "d": Double(),
-
 }
 
 
 def get_repeat_count_str(format_str: str) -> str:
     if rm := re.match(r"^\d+", format_str):
-        return format_str[rm.regs[0][0]: rm.regs[0][1]]
+        return format_str[rm.regs[0][0] : rm.regs[0][1]]
     return ""
 
 
@@ -90,7 +82,7 @@ def get_next_format(format_str: str) -> str:  # noqa: PLR0911
         return "a*"
     if format_str.startswith("a["):
         end_index = format_str.find("]")
-        return format_str[0:end_index + 1]
+        return format_str[0 : end_index + 1]
     if format_str[0] == "C":
         count = get_repeat_count_str(format_str[1:])
         return format_str[0] + count
@@ -105,11 +97,13 @@ def get_next_format(format_str: str) -> str:  # noqa: PLR0911
     raise NotImplementedError(msg)
 
 
-def _parse_format_simple(format_str: str) -> BaseBinaryFormat:
+def _parse_format_simple(format_str: str) -> BaseBinaryFormat[Any]:
     return simple_formats[format_str]
 
 
-def parse_format(format_str: str) -> list[BaseBinaryFormat]:  # noqa: C901,PLR0912,PLR0914,PLR0915
+def _parse_format(  # noqa: PLR0915,C901,PLR0912
+    format_str: str,
+) -> list[BaseBinaryFormat[Any]]:
     with_dynamic_count_format_re = r"^(?P<count_format>.)/(?P<item_format>.)"
     with_dynamic_count_group_format_re = r"^(?P<count_format>.)/\((?P<item_format>.*)\)"
     with_static_count_format_re = r"^(?P<item_format>.)\[?(?P<count>\d+)\]?"
@@ -117,13 +111,20 @@ def parse_format(format_str: str) -> list[BaseBinaryFormat]:  # noqa: C901,PLR09
     with_unknown_count_format_re = r"^(?P<item_format>.)\*"
 
     format_str_tmp = format_str
-    formats = []
+    formats: list[BaseBinaryFormat[Any]] = []
+    current_format: BaseBinaryFormat[Any]
+    item_format: BaseBinaryFormat[Any]
     while format_str_tmp:
         if match := re.match(with_dynamic_count_group_format_re, format_str_tmp):
             count_format_str = match.group("count_format")
             item_format_str = match.group("item_format")
             cont_format = _parse_format_simple(count_format_str)
-            item_format = parse_format(item_format_str)[0]
+            item_formats = _parse_format(item_format_str)
+            item_format = (
+                item_formats[0]
+                if len(item_formats) == 1
+                else GroupFormat(tuple(item_formats))
+            )
             current_format = DynamicLenArray(item_format, cont_format)
             formats.append(current_format)
             format_len = match.regs[0][1] - match.regs[0][0]
@@ -182,7 +183,7 @@ def parse_format(format_str: str) -> list[BaseBinaryFormat]:  # noqa: C901,PLR09
                 current_format = FirstHighNibbleCounteddArray(count)
                 formats.append(current_format)
             else:
-                item_format = parse_format(item_format_str)[0]
+                item_format = _parse_format(item_format_str)[0]
                 current_formats = [item_format] * count
                 formats.extend(current_formats)
             format_len = match.regs[0][1] - match.regs[0][0]
@@ -197,8 +198,7 @@ def parse_format(format_str: str) -> list[BaseBinaryFormat]:  # noqa: C901,PLR09
             elif item_format_str == "H":
                 current_format = FirstHighNibbleUnlimitedArray()
             elif item_format_str in binary_string_formats:
-                item_format = UnSignedChar()
-                current_format = UnlimitedAsciiString(item_format)
+                current_format = UnlimitedAsciiString()
             else:
                 item_format = _parse_format_simple(item_format_str)
                 current_format = UnlimitedLenArray(item_format)
@@ -210,5 +210,10 @@ def parse_format(format_str: str) -> list[BaseBinaryFormat]:  # noqa: C901,PLR09
             current_format = _parse_format_simple(_format_str)
             formats.append(current_format)
             format_str_tmp = format_str_tmp[1:]
-    group = GroupFormat(tuple(formats))
-    return [group]
+
+    return formats
+
+
+def parse_format(format_str: str) -> GroupFormat:
+    formats = _parse_format(format_str)
+    return GroupFormat(tuple(formats))
