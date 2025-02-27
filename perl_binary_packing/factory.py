@@ -66,11 +66,17 @@ simple_formats: dict[str, BaseBinaryFormat[Any]] = {
 def _parse_format_simple(format_str: str) -> BaseBinaryFormat[Any]:
     return simple_formats[format_str]
 
+
 __WITH_DYNAMIC_COUNT_FORMAT_RE = re.compile(r"^(?P<count_format>.)/(?P<item_format>.)")
-__WITH_DYNAMIC_COUNT_GROUP_FORMAT_RE = re.compile(r"^(?P<count_format>.)/\((?P<item_format>.*)\)")
+__WITH_DYNAMIC_COUNT_GROUP_FORMAT_RE = re.compile(
+    r"^(?P<count_format>.)/\((?P<item_format>.*)\)",
+)
 __WITH_STATIC_COUNT_FORMAT_RE = re.compile(r"^(?P<item_format>.)\[?(?P<count>\d+)\]?")
-__GROUP_WITH_STATIC_COUNT_FORMAT_RE = re.compile(r"^\((?P<item_format>.*)\)\[?(?P<count>\d+)\]?")
+__GROUP_WITH_STATIC_COUNT_FORMAT_RE = re.compile(
+    r"^\((?P<item_format>.*)\)\[?(?P<count>\d+)\]?",
+)
 __WITH_UNKNOWN_COUNT_FORMAT_RE = re.compile(r"^(?P<item_format>.)\*")
+
 
 def _parse_format(  # noqa: PLR0915,C901,PLR0912
     format_str: str,
