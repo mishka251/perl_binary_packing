@@ -69,34 +69,6 @@ def get_repeat_count_str(format_str: str) -> str:
     return ""
 
 
-def get_next_format(format_str: str) -> str:  # noqa: PLR0911
-    with_count_format_re = r"^./."
-    if re.match(with_count_format_re, format_str):
-        return format_str[:3]
-    if format_str[0] == "V" or format_str[0] == "v":
-        count = get_repeat_count_str(format_str[1:])
-        return format_str[0] + count
-    if format_str.startswith("Z*"):
-        return "Z*"
-    if format_str.startswith("a*"):
-        return "a*"
-    if format_str.startswith("a["):
-        end_index = format_str.find("]")
-        return format_str[0 : end_index + 1]
-    if format_str[0] == "C":
-        count = get_repeat_count_str(format_str[1:])
-        return format_str[0] + count
-    if format_str.startswith("f"):
-        count = get_repeat_count_str(format_str[1:])
-        return format_str[0] + count
-    if format_str.startswith("l"):
-        count = get_repeat_count_str(format_str[1:])
-        return format_str[0] + count
-
-    msg = f"format={format_str}"
-    raise NotImplementedError(msg)
-
-
 def _parse_format_simple(format_str: str) -> BaseBinaryFormat[Any]:
     return simple_formats[format_str]
 
