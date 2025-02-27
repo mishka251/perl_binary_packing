@@ -63,31 +63,24 @@ simple_formats: dict[str, BaseBinaryFormat[Any]] = {
 }
 
 
-def get_repeat_count_str(format_str: str) -> str:
-    if rm := re.match(r"^\d+", format_str):
-        return format_str[rm.regs[0][0] : rm.regs[0][1]]
-    return ""
-
-
 def _parse_format_simple(format_str: str) -> BaseBinaryFormat[Any]:
     return simple_formats[format_str]
 
+__WITH_DYNAMIC_COUNT_FORMAT_RE = re.compile(r"^(?P<count_format>.)/(?P<item_format>.)")
+__WITH_DYNAMIC_COUNT_GROUP_FORMAT_RE = re.compile(r"^(?P<count_format>.)/\((?P<item_format>.*)\)")
+__WITH_STATIC_COUNT_FORMAT_RE = re.compile(r"^(?P<item_format>.)\[?(?P<count>\d+)\]?")
+__GROUP_WITH_STATIC_COUNT_FORMAT_RE = re.compile(r"^\((?P<item_format>.*)\)\[?(?P<count>\d+)\]?")
+__WITH_UNKNOWN_COUNT_FORMAT_RE = re.compile(r"^(?P<item_format>.)\*")
 
 def _parse_format(  # noqa: PLR0915,C901,PLR0912
     format_str: str,
 ) -> list[BaseBinaryFormat[Any]]:
-    with_dynamic_count_format_re = r"^(?P<count_format>.)/(?P<item_format>.)"
-    with_dynamic_count_group_format_re = r"^(?P<count_format>.)/\((?P<item_format>.*)\)"
-    with_static_count_format_re = r"^(?P<item_format>.)\[?(?P<count>\d+)\]?"
-    group_with_static_count_format_re = r"^\((?P<item_format>.*)\)\[?(?P<count>\d+)\]?"
-    with_unknown_count_format_re = r"^(?P<item_format>.)\*"
-
     format_str_tmp = format_str
     formats: list[BaseBinaryFormat[Any]] = []
     current_format: BaseBinaryFormat[Any]
     item_format: BaseBinaryFormat[Any]
     while format_str_tmp:
-        if match := re.match(with_dynamic_count_group_format_re, format_str_tmp):
+        if match := __WITH_DYNAMIC_COUNT_GROUP_FORMAT_RE.match(format_str_tmp):
             count_format_str = match.group("count_format")
             item_format_str = match.group("item_format")
             cont_format = _parse_format_simple(count_format_str)
@@ -101,7 +94,7 @@ def _parse_format(  # noqa: PLR0915,C901,PLR0912
             formats.append(current_format)
             format_len = match.regs[0][1] - match.regs[0][0]
             format_str_tmp = format_str_tmp[format_len:]
-        elif match := re.match(with_dynamic_count_format_re, format_str_tmp):
+        elif match := __WITH_DYNAMIC_COUNT_FORMAT_RE.match(format_str_tmp):
             count_format_str = match.group("count_format")
             item_format_str = match.group("item_format")
             cont_format = _parse_format_simple(count_format_str)
@@ -110,7 +103,7 @@ def _parse_format(  # noqa: PLR0915,C901,PLR0912
             formats.append(current_format)
             format_len = match.regs[0][1] - match.regs[0][0]
             format_str_tmp = format_str_tmp[format_len:]
-        elif match := re.match(with_static_count_format_re, format_str_tmp):
+        elif match := __WITH_STATIC_COUNT_FORMAT_RE.match(format_str_tmp):
             count_str = match.group("count")
             count = int(count_str)
             item_format_str = match.group("item_format")
@@ -135,7 +128,7 @@ def _parse_format(  # noqa: PLR0915,C901,PLR0912
                 formats.extend(current_formats)
             format_len = match.regs[0][1] - match.regs[0][0]
             format_str_tmp = format_str_tmp[format_len:]
-        elif match := re.match(group_with_static_count_format_re, format_str_tmp):
+        elif match := __GROUP_WITH_STATIC_COUNT_FORMAT_RE.match(format_str_tmp):
             count_str = match.group("count")
             count = int(count_str)
             item_format_str = match.group("item_format")
@@ -160,7 +153,7 @@ def _parse_format(  # noqa: PLR0915,C901,PLR0912
                 formats.extend(current_formats)
             format_len = match.regs[0][1] - match.regs[0][0]
             format_str_tmp = format_str_tmp[format_len:]
-        elif match := re.match(with_unknown_count_format_re, format_str_tmp):
+        elif match := __WITH_UNKNOWN_COUNT_FORMAT_RE.match(format_str_tmp):
             item_format_str = match.group("item_format")
             binary_string_formats = {"a", "A"}
             if item_format_str == "Z":
