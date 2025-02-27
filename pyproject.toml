@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "perl_binary_packing"
-version = "0.3.0"
+version = "0.4.0"
 description = "Binary pack/unpack with perl-style format"
 authors = [
     { name = "Mikhail Belov(mishka251)", email = "mishkabelka251@gmail.com" },
